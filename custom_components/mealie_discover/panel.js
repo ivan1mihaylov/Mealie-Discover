@@ -42,12 +42,18 @@ class MealieDiscoverPanel extends HTMLElement {
       <main>
       <p class="hint">Потърси рецепта онлайн. Гледанията са само за видеоклипове. При сайтовете най-отгоре са рецептите с най-много оценки; оценки има само когато сайтът ги публикува.</p>
       <form id="form"><input id="query" placeholder="Например: боб яхния" required minlength="2" maxlength="120" />
-      <select id="provider"></select><button id="submit" type="submit">Търси</button></form>
+      <select id="provider"></select>
+      <select id="language" aria-label="Език"><option value="all">Всички езици</option><option value="bg">Български</option><option value="en">English</option></select><button id="submit" type="submit">Търси</button></form>
       <div id="status" role="status"></div><div class="grid" id="results"></div></main>`;
     this.root = root;
     this._menu = root.querySelector("ha-menu-button");
     this._menu.hass = this._hass;
     this._menu.narrow = this._narrow;
+    const language = root.querySelector("#language");
+    try { language.value = localStorage.getItem("mealie-discover-language") || "all"; } catch (error) { /* storage unavailable */ }
+    language.addEventListener("change", () => {
+      try { localStorage.setItem("mealie-discover-language", language.value); } catch (error) { /* storage unavailable */ }
+    });
     root.querySelector("#form").addEventListener("submit", (event) => { event.preventDefault(); this._search(); });
     try {
       const state = await this._hass.callWS({ type: "mealie_discover/state" });
@@ -77,6 +83,7 @@ class MealieDiscoverPanel extends HTMLElement {
         type: "mealie_discover/search",
         query: this.root.querySelector("#query").value.trim(),
         provider,
+        language: this.root.querySelector("#language").value,
       });
       this._status(results.length ? `${results.length} резултата` : "Няма намерени резултати.");
       for (const recipe of results) grid.append(this._card(recipe));

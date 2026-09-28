@@ -8,7 +8,7 @@ from homeassistant.components import websocket_api as ws
 from homeassistant.core import HomeAssistant, callback
 
 from .const import DOMAIN
-from .discovery import DiscoveryError, RecipeDiscovery
+from .discovery import LANGUAGES, DiscoveryError, RecipeDiscovery
 
 
 def _service(hass: HomeAssistant) -> RecipeDiscovery:
@@ -32,11 +32,11 @@ async def state(hass: HomeAssistant, connection: ws.ActiveConnection, msg: dict)
         connection.send_error(msg["id"], exc.code, str(exc))
 
 
-@ws.websocket_command({vol.Required("type"): f"{DOMAIN}/search", vol.Required("query"): vol.All(str, vol.Length(min=2, max=120)), vol.Required("provider"): vol.In(("web", "youtube"))})
+@ws.websocket_command({vol.Required("type"): f"{DOMAIN}/search", vol.Required("query"): vol.All(str, vol.Length(min=2, max=120)), vol.Required("provider"): vol.In(("web", "youtube")), vol.Optional("language", default="all"): vol.In(LANGUAGES)})
 @ws.async_response
 async def search(hass: HomeAssistant, connection: ws.ActiveConnection, msg: dict) -> None:
     try:
-        connection.send_result(msg["id"], await _service(hass).search(msg["query"], msg["provider"]))
+        connection.send_result(msg["id"], await _service(hass).search(msg["query"], msg["provider"], msg["language"]))
     except DiscoveryError as exc:
         connection.send_error(msg["id"], "search_failed", str(exc))
 

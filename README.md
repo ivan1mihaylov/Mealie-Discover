@@ -35,7 +35,7 @@ search:
     - json
 ```
 
-A Bulgarian search term works; the integration adds “рецепта” and asks SearXNG for Bulgarian results. Public SearXNG instances usually block JSON requests, so use your own.
+Search in any language. The panel has a language filter (all languages, Bulgarian or English, remembered per browser), and the integration adds “рецепта” or “recipe” to the query depending on its alphabet, unless you already wrote it. Public SearXNG instances usually block JSON requests, so use your own.
 
 ### YouTube (optional)
 
