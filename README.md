@@ -44,7 +44,7 @@ Search in any language. The panel has a language filter (all languages, Bulgaria
 With the [Social to Mealie](https://github.com/alexbelgium/hassio-addons/tree/master/social_to_mealie) add-on, videos are imported by downloading them, transcribing the audio and building the recipe with AI, which works much better than Mealie's own import for videos. Enter the add-on's URL, for example `http://<home-assistant-ip>:3000`; on Home Assistant OS it is detected and filled in when the add-on is running. When it is set:
 
 - **Add to Mealie** on YouTube results goes through the add-on.
-- The panel shows **Add from link** for Instagram, TikTok, Facebook, YouTube and other links the add-on supports.
+- A **Линк** (link) option appears next to Sites and YouTube. Selecting it turns the search bar into a field for Instagram, TikTok, Facebook, YouTube and other links the add-on supports, with an Import button.
 
 Imports through the add-on take a minute or two and use your OpenAI account.
 

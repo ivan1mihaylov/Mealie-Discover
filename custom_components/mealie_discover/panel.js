@@ -15,7 +15,7 @@ const ICONS = {
 };
 const SUGGESTIONS = ["Боб чорба", "Мусака", "Леща яхния", "Баница", "Таратор", "Pancakes"];
 const LANGUAGES = [["all", "Всички езици"], ["bg", "Български"], ["en", "English"]];
-const PROVIDERS = { web: ["web", "Сайтове"], youtube: ["video", "YouTube"] };
+const PROVIDERS = { web: ["web", "Сайтове"], youtube: ["video", "YouTube"], link: ["link", "Линк"] };
 
 function icon(name, size = 18) {
   return `<svg viewBox="0 0 24 24" width="${size}" height="${size}" aria-hidden="true"><path fill="currentColor" d="${ICONS[name]}"/></svg>`;
@@ -96,7 +96,7 @@ class MealieDiscoverPanel extends HTMLElement {
           border:1px solid var(--md-line); border-radius:28px; padding:6px 6px 6px 18px; gap:10px;
           box-shadow:0 6px 24px rgba(0,0,0,.08); transition:border-color .2s, box-shadow .2s }
         .searchbar:focus-within { border-color:var(--md-accent); box-shadow:0 0 0 3px color-mix(in srgb, var(--md-accent) 25%, transparent) }
-        .searchbar > svg { color:var(--md-muted) }
+        #lead { display:flex; color:var(--md-muted) }
         .searchbar input { flex:1; min-width:0; border:0; outline:0; background:none; color:var(--md-text); font:inherit; font-size:17px; padding:10px 0 }
         .searchbar input::placeholder { color:var(--md-muted) }
         .searchbar input::-webkit-search-cancel-button { -webkit-appearance:none; appearance:none; display:none }
@@ -148,19 +148,10 @@ class MealieDiscoverPanel extends HTMLElement {
           background-size:200% 100%; animation:shimmer 1.2s infinite linear }
         .skeleton .line { height:14px; border-radius:7px }
         @keyframes shimmer { to { background-position:-200% 0 } }
-        .linkcard { margin-top:16px; padding:14px; border-radius:20px; background:var(--md-card); border:1px solid var(--md-line) }
-        .linkhead { display:flex; align-items:center; gap:12px; margin-bottom:12px }
-        .linkhead .bubble { display:grid; place-items:center; width:40px; height:40px; border-radius:12px;
-          background:color-mix(in srgb, var(--md-accent) 18%, transparent); color:var(--md-accent) }
-        .linkhead b { display:block; font-size:16px }
-        .linkhead span { color:var(--md-muted); font-size:13px }
-        .linkrow { display:flex; gap:8px }
-        .linkrow input { flex:1; min-width:0; padding:11px 14px; border-radius:14px; border:1px solid var(--md-line);
-          background:var(--md-surface); color:var(--md-text); font:inherit; outline:0 }
-        .linkrow input:focus { border-color:var(--md-accent) }
-        .linkrow .primary { flex:none }
-        .linkresult { margin-top:10px; font-size:13.5px; color:var(--md-muted); display:flex; flex-direction:column; gap:8px }
-        .linkresult:empty { display:none }
+        .go.done { background:var(--md-success) }
+        .linkhint { margin:16px 2px 0; color:var(--md-muted); font-size:14px; line-height:1.5; display:none }
+        main.linkmode .linkhint { display:block }
+        main.linkmode #languages, main.linkmode #summary, main.linkmode #results, main.linkmode #empty { display:none }
         .empty { text-align:center; padding:48px 16px; color:var(--md-muted) }
         .empty .big { font-size:56px; margin-bottom:8px }
         .empty h3 { margin:0 0 6px; color:var(--md-text); font-size:19px }
@@ -179,9 +170,6 @@ class MealieDiscoverPanel extends HTMLElement {
           main { padding:12px 12px 96px }
           .grid { grid-template-columns:1fr; gap:14px }
           .group + .group { padding-left:0; border-left:0 }
-          .linkrow { flex-wrap:wrap }
-          .linkrow input { flex-basis:100% }
-          .linkrow .primary { flex:1 }
         }
       </style>
       <div class="toolbar"><ha-menu-button></ha-menu-button><div>Mealie Discover</div></div>
@@ -190,20 +178,13 @@ class MealieDiscoverPanel extends HTMLElement {
           <h1>Какво ще готвим днес?</h1>
           <p>Намери популярни рецепти и ги добави в Mealie с едно докосване.</p>
           <form id="form" class="searchbar" role="search">
-            ${icon("search", 22)}
+            <span id="lead">${icon("search", 22)}</span>
             <input id="query" type="search" enterkeyhint="search" autocomplete="off" placeholder="Боб, мусака, баница…" required minlength="2" maxlength="120" />
             <button id="clear" class="clear" type="button" aria-label="Изчисти" hidden>${icon("close", 22)}</button>
             <button id="submit" class="go" type="submit">${icon("search")}<span>Търси</span></button>
           </form>
           <div class="filters"><div class="group" id="providers"></div><div class="group" id="languages"></div></div>
-          <section class="linkcard" id="linkcard" hidden>
-            <div class="linkhead"><div class="bubble">${icon("link", 22)}</div>
-              <div><b>Добави от линк</b><span>Instagram, TikTok, Facebook, YouTube… чрез Social to Mealie</span></div></div>
-            <form class="linkrow" id="linkform">
-              <input id="link" type="url" inputmode="url" autocomplete="off" placeholder="Постави линк…" required />
-            </form>
-            <div class="linkresult" id="linkresult"></div>
-          </section>
+          <div class="linkhint">Постави линк от Instagram, TikTok, Facebook, YouTube… Social to Mealie тегли видеото, транскрибира го и AI съставя рецептата. Отнема 1–2 минути.</div>
         </section>
         <div class="summary" id="summary" role="status"></div>
         <div class="grid" id="results"></div>
@@ -239,12 +220,16 @@ class MealieDiscoverPanel extends HTMLElement {
       chip.addEventListener("click", () => { root.querySelector("#query").value = text; this._toggleClear(); this._search(); });
       suggestions.append(chip);
     }
-    root.querySelector("#form").addEventListener("submit", (event) => { event.preventDefault(); this._search(); });
+    root.querySelector("#form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (this._provider === "link") this._importLink();
+      else this._search();
+    });
     const query = root.querySelector("#query");
     const clear = root.querySelector("#clear");
     const toggleClear = () => { clear.hidden = !query.value; };
-    query.addEventListener("input", toggleClear);
-    clear.addEventListener("click", () => { query.value = ""; toggleClear(); query.focus(); });
+    query.addEventListener("input", () => { toggleClear(); this._resetLink(); });
+    clear.addEventListener("click", () => { query.value = ""; toggleClear(); this._resetLink(); query.focus(); });
     this._toggleClear = toggleClear;
     root.querySelector("#back").addEventListener("click", () => this._closeRecipe());
     root.querySelector("#open-mealie").addEventListener("click", () => {
@@ -256,37 +241,77 @@ class MealieDiscoverPanel extends HTMLElement {
       const state = await this._hass.callWS({ type: "mealie_discover/state" });
       this._mealiePanel = state.mealie_panel;
       this._social = state.social;
-      if (state.social) this._setupLinkImport();
-      if (!state.providers.length) {
-        for (const selector of ["#form", ".filters", "#empty"]) root.querySelector(selector).hidden = true;
-      }
-      if (!state.providers.includes(this._provider)) this._provider = state.providers[0];
-      this._renderChips("#providers", state.providers.map((name) => [name, ...PROVIDERS[name]]), () => this._provider, (value) => {
+      const modes = [...state.providers, ...(state.social ? ["link"] : [])];
+      if (!modes.includes(this._provider)) this._provider = modes[0];
+      this._renderChips("#providers", modes.map((name) => [name, ...PROVIDERS[name]]), () => this._provider, (value) => {
         this._provider = value;
         storage("mealie-discover-provider", value);
+        this._setMode();
       });
-      if (!state.providers.length && !state.social) this._toast("Настрой SearXNG, YouTube или Social to Mealie в настройките на интеграцията.");
+      this._setMode();
+      if (!modes.length) this._toast("Настрой SearXNG, YouTube или Social to Mealie в настройките на интеграцията.");
     } catch (error) { this._toast(this._error(error)); }
   }
 
-  _setupLinkImport() {
-    const card = this.root.querySelector("#linkcard");
-    const form = this.root.querySelector("#linkform");
-    const input = this.root.querySelector("#link");
-    const output = this.root.querySelector("#linkresult");
-    const button = this._importButton("Импортирай", "Обработва се…", () => {
-      output.textContent = "Social to Mealie тегли видеото, транскрибира го и създава рецептата. Обикновено отнема 1–2 минути.";
-      return this._hass.callWS({ type: "mealie_discover/import_social", url: input.value.trim() });
-    }, () => { output.textContent = ""; });
-    button.type = "submit";
-    form.append(button);
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
-      if (button._result) return;
-      button.click();
-    });
-    input.addEventListener("input", () => button._reset());
-    card.hidden = false;
+  // "Линк" turns the search bar into a link field for Social to Mealie; each mode keeps its own text.
+  _setMode() {
+    const link = this._provider === "link";
+    const query = this.root.querySelector("#query");
+    this._texts = this._texts || {};
+    if (this._mode) this._texts[this._mode] = query.value;
+    this._mode = this._provider;
+    query.value = this._texts[this._mode] || "";
+    query.type = link ? "url" : "search";
+    query.inputMode = link ? "url" : "search";
+    query.enterKeyHint = link ? "go" : "search";
+    query.placeholder = link ? "Постави линк…" : "Боб, мусака, баница…";
+    query.minLength = link ? 8 : 2;
+    query.maxLength = link ? 2000 : 120;
+    this.root.querySelector("#lead").innerHTML = icon(link ? "link" : "search", 22);
+    this.root.querySelector("main").classList.toggle("linkmode", link);
+    this._toggleClear();
+    this._linkResult = undefined;
+    this._renderSubmit("idle");
+  }
+
+  _renderSubmit(state) {
+    const button = this.root.querySelector("#submit");
+    const link = this._provider === "link";
+    button.classList.toggle("done", state === "done");
+    button.innerHTML = state === "busy" ? `<span class="spinner"></span><span>Обработва се…</span>`
+      : state === "done" ? `${icon("check")}<span>Отвори</span>`
+      : link ? `${icon("plus")}<span>Импортирай</span>` : `${icon("search")}<span>Търси</span>`;
+  }
+
+  _resetLink() {
+    if (this._provider !== "link" || !this._linkResult) return;
+    this._linkResult = undefined;
+    this._renderSubmit("idle");
+  }
+
+  async _importLink() {
+    const button = this.root.querySelector("#submit");
+    if (button.disabled) return;
+    if (this._linkResult) {
+      if (this._mealiePanel) this._openRecipe(this._linkResult);
+      else window.open(this._linkResult.url, "_blank", "noopener");
+      return;
+    }
+    const url = this.root.querySelector("#query").value.trim();
+    if (!url) return;
+    button.disabled = true;
+    this._renderSubmit("busy");
+    try {
+      const result = await this._hass.callWS({ type: "mealie_discover/import_social", url });
+      this._linkResult = result;
+      this._renderSubmit("done");
+      this._toast(result.total
+        ? `Добавена в Mealie ✓ Свързани съставки: ${result.linked} от ${result.total}.`
+        : "Добавена в Mealie ✓");
+    } catch (error) {
+      this._renderSubmit("idle");
+      this._toast(this._error(error), 10000);
+    } finally { button.disabled = false; }
   }
 
   // One button for a recipe: Add → working… → Open in Mealie.
