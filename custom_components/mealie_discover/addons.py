@@ -1,4 +1,4 @@
-"""Find running SearXNG and Mealie add-ons to prefill the config flow."""
+"""Find running SearXNG, Mealie and Social to Mealie add-ons to prefill the config flow."""
 
 from __future__ import annotations
 
@@ -12,14 +12,14 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.hassio import is_hassio
 
-from .const import CONF_MEALIE_URL, CONF_SEARXNG_URL
+from .const import CONF_MEALIE_URL, CONF_SEARXNG_URL, CONF_SOCIAL_URL
 
 _LOGGER = logging.getLogger(__name__)
 _PROBE_TIMEOUT = 5
 
 
 async def async_detect_urls(hass: HomeAssistant) -> dict[str, str]:
-    """Return working URLs of started SearXNG and Mealie add-ons, if any."""
+    """Return working URLs of started SearXNG, Mealie and Social to Mealie add-ons, if any."""
     if not is_hassio(hass):
         return {}
     # Imported here because hassio only loads on Home Assistant OS/Supervised.
@@ -35,12 +35,13 @@ async def async_detect_urls(hass: HomeAssistant) -> dict[str, str]:
     session = async_get_clientsession(hass)
     lan_host = await _lan_host(hass)
     found: dict[str, str] = {}
-    for key, word, probe in (
+    for key, kind, probe in (
         (CONF_SEARXNG_URL, "searxng", _is_searxng),
         (CONF_MEALIE_URL, "mealie", _is_mealie),
+        (CONF_SOCIAL_URL, "social", _is_social),
     ):
         for addon in addons:
-            if word not in f"{addon.slug} {addon.name}".lower() or addon.state != "started":
+            if _kind(addon) != kind or addon.state != "started":
                 continue
             try:
                 info = await client.addons.addon_info(addon.slug)
@@ -53,6 +54,18 @@ async def async_detect_urls(hass: HomeAssistant) -> dict[str, str]:
                 found[key] = url
                 break
     return found
+
+
+def _kind(addon) -> str | None:
+    """Which add-on this is; "Social to Mealie" must not count as Mealie."""
+    text = f"{addon.slug} {addon.name}".lower()
+    if "searxng" in text:
+        return "searxng"
+    if "social" in text and "mealie" in text:
+        return "social"
+    if "mealie" in text:
+        return "mealie"
+    return None
 
 
 async def _lan_host(hass: HomeAssistant) -> str | None:
@@ -101,6 +114,11 @@ async def _is_mealie(session: ClientSession, url: str) -> bool:
     return isinstance(body, dict) and "version" in body
 
 
+async def _is_social(session: ClientSession, url: str) -> bool:
+    body = await _get_json(session, f"{url}/manifest.webmanifest")
+    return isinstance(body, dict) and "social-to-mealie" in str(body.get("id", "")).lower()
+
+
 async def async_mealie_panel(hass: HomeAssistant) -> dict[str, str] | None:
     """Slug and ingress URL of a started Mealie add-on with a sidebar panel."""
     if not is_hassio(hass):
@@ -110,7 +128,7 @@ async def async_mealie_panel(hass: HomeAssistant) -> dict[str, str] | None:
     client = get_supervisor_client(hass)
     try:
         for addon in await client.addons.list():
-            if "mealie" not in f"{addon.slug} {addon.name}".lower() or addon.state != "started":
+            if _kind(addon) != "mealie" or addon.state != "started":
                 continue
             info = await client.addons.addon_info(addon.slug)
             if info.ingress_url:

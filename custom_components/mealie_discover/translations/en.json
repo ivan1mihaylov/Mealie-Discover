@@ -3,32 +3,35 @@
     "step": {
       "user": {
         "title": "Connect Mealie Discover",
-        "description": "Enter the Mealie URL reachable from Home Assistant, an API token, and at least one search provider: a SearXNG instance with JSON output enabled and/or a YouTube Data API key. Found add-ons: {detected}. Create the Mealie API token in Mealie under your profile → API Tokens.",
+        "description": "Enter the Mealie URL reachable from Home Assistant, an API token, and at least one of: a SearXNG instance with JSON output enabled, a YouTube Data API key, or a Social to Mealie add-on URL (imports YouTube videos and links from Instagram, TikTok and Facebook). Found add-ons: {detected}. Create the Mealie API token in Mealie under your profile → API Tokens.",
         "data": {
           "mealie_url": "Mealie URL",
           "mealie_token": "Mealie API token",
           "searxng_url": "SearXNG URL (optional)",
-          "youtube_key": "YouTube Data API key (optional)"
+          "youtube_key": "YouTube Data API key (optional)",
+          "social_url": "Social to Mealie URL (optional)"
         }
       },
       "reconfigure": {
         "title": "Reconfigure Mealie Discover",
-        "description": "Enter the Mealie URL reachable from Home Assistant, an API token, and at least one search provider: a SearXNG instance with JSON output enabled and/or a YouTube Data API key. Found add-ons: {detected}. Create the Mealie API token in Mealie under your profile → API Tokens.",
+        "description": "Enter the Mealie URL reachable from Home Assistant, an API token, and at least one of: a SearXNG instance with JSON output enabled, a YouTube Data API key, or a Social to Mealie add-on URL (imports YouTube videos and links from Instagram, TikTok and Facebook). Found add-ons: {detected}. Create the Mealie API token in Mealie under your profile → API Tokens.",
         "data": {
           "mealie_url": "Mealie URL",
           "mealie_token": "Mealie API token",
           "searxng_url": "SearXNG URL (optional)",
-          "youtube_key": "YouTube Data API key (optional)"
+          "youtube_key": "YouTube Data API key (optional)",
+          "social_url": "Social to Mealie URL (optional)"
         }
       }
     },
     "error": {
       "invalid_url": "Enter an HTTP or HTTPS URL without credentials or query parameters",
-      "provider_required": "Configure SearXNG, YouTube, or both",
+      "provider_required": "Configure SearXNG, YouTube or Social to Mealie",
       "cannot_connect": "Cannot reach Mealie from Home Assistant, or the URL is not Mealie's API address",
       "invalid_auth": "Mealie rejected the API token",
       "searxng_unreachable": "Cannot reach SearXNG from Home Assistant",
-      "searxng_json": "SearXNG refused JSON output. Add \"json\" to search.formats in settings.yml"
+      "searxng_json": "SearXNG refused JSON output. Add \"json\" to search.formats in settings.yml",
+      "social_unreachable": "Cannot reach Social to Mealie at this address"
     },
     "abort": {
       "already_configured": "Mealie Discover is already configured",

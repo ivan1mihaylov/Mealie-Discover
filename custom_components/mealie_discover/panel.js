@@ -8,6 +8,7 @@ const ICONS = {
   check: "M21 7 9 19l-5.5-5.5 1.41-1.41L9 16.17 19.59 5.59 21 7Z",
   open: "M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7m5 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7Z",
   close: "M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z",
+  link: "M10.59 13.41c.41.39.41 1.03 0 1.42-.39.39-1.03.39-1.42 0a5.003 5.003 0 0 1 0-7.07l3.54-3.54a5.003 5.003 0 0 1 7.07 0 5.003 5.003 0 0 1 0 7.07l-1.49 1.49c.01-.82-.12-1.64-.4-2.42l.47-.48a2.982 2.982 0 0 0 0-4.24 2.982 2.982 0 0 0-4.24 0l-3.53 3.53a2.982 2.982 0 0 0 0 4.24m2.82-4.24c.39-.39 1.03-.39 1.42 0a5.003 5.003 0 0 1 0 7.07l-3.54 3.54a5.003 5.003 0 0 1-7.07 0 5.003 5.003 0 0 1 0-7.07l1.49-1.49c-.01.82.12 1.64.4 2.43l-.47.47a2.982 2.982 0 0 0 0 4.24 2.982 2.982 0 0 0 4.24 0l3.53-3.53a2.982 2.982 0 0 0 0-4.24.973.973 0 0 1 0-1.42Z",
   back: "M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z",
   web: "M16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2 0-.68.06-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.65 15.65 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2Z",
   video: "M10 15l5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 5c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73Z",
@@ -147,6 +148,19 @@ class MealieDiscoverPanel extends HTMLElement {
           background-size:200% 100%; animation:shimmer 1.2s infinite linear }
         .skeleton .line { height:14px; border-radius:7px }
         @keyframes shimmer { to { background-position:-200% 0 } }
+        .linkcard { margin-top:16px; padding:14px; border-radius:20px; background:var(--md-card); border:1px solid var(--md-line) }
+        .linkhead { display:flex; align-items:center; gap:12px; margin-bottom:12px }
+        .linkhead .bubble { display:grid; place-items:center; width:40px; height:40px; border-radius:12px;
+          background:color-mix(in srgb, var(--md-accent) 18%, transparent); color:var(--md-accent) }
+        .linkhead b { display:block; font-size:16px }
+        .linkhead span { color:var(--md-muted); font-size:13px }
+        .linkrow { display:flex; gap:8px }
+        .linkrow input { flex:1; min-width:0; padding:11px 14px; border-radius:14px; border:1px solid var(--md-line);
+          background:var(--md-surface); color:var(--md-text); font:inherit; outline:0 }
+        .linkrow input:focus { border-color:var(--md-accent) }
+        .linkrow .primary { flex:none }
+        .linkresult { margin-top:10px; font-size:13.5px; color:var(--md-muted); display:flex; flex-direction:column; gap:8px }
+        .linkresult:empty { display:none }
         .empty { text-align:center; padding:48px 16px; color:var(--md-muted) }
         .empty .big { font-size:56px; margin-bottom:8px }
         .empty h3 { margin:0 0 6px; color:var(--md-text); font-size:19px }
@@ -165,6 +179,9 @@ class MealieDiscoverPanel extends HTMLElement {
           main { padding:12px 12px 96px }
           .grid { grid-template-columns:1fr; gap:14px }
           .group + .group { padding-left:0; border-left:0 }
+          .linkrow { flex-wrap:wrap }
+          .linkrow input { flex-basis:100% }
+          .linkrow .primary { flex:1 }
         }
       </style>
       <div class="toolbar"><ha-menu-button></ha-menu-button><div>Mealie Discover</div></div>
@@ -179,6 +196,14 @@ class MealieDiscoverPanel extends HTMLElement {
             <button id="submit" class="go" type="submit">${icon("search")}<span>Търси</span></button>
           </form>
           <div class="filters"><div class="group" id="providers"></div><div class="group" id="languages"></div></div>
+          <section class="linkcard" id="linkcard" hidden>
+            <div class="linkhead"><div class="bubble">${icon("link", 22)}</div>
+              <div><b>Добави от линк</b><span>Instagram, TikTok, Facebook, YouTube… чрез Social to Mealie</span></div></div>
+            <form class="linkrow" id="linkform">
+              <input id="link" type="url" inputmode="url" autocomplete="off" placeholder="Постави линк…" required />
+            </form>
+            <div class="linkresult" id="linkresult"></div>
+          </section>
         </section>
         <div class="summary" id="summary" role="status"></div>
         <div class="grid" id="results"></div>
@@ -230,13 +255,79 @@ class MealieDiscoverPanel extends HTMLElement {
     try {
       const state = await this._hass.callWS({ type: "mealie_discover/state" });
       this._mealiePanel = state.mealie_panel;
+      this._social = state.social;
+      if (state.social) this._setupLinkImport();
+      if (!state.providers.length) {
+        for (const selector of ["#form", ".filters", "#empty"]) root.querySelector(selector).hidden = true;
+      }
       if (!state.providers.includes(this._provider)) this._provider = state.providers[0];
       this._renderChips("#providers", state.providers.map((name) => [name, ...PROVIDERS[name]]), () => this._provider, (value) => {
         this._provider = value;
         storage("mealie-discover-provider", value);
       });
-      if (!state.providers.length) this._toast("Настрой SearXNG или YouTube в настройките на интеграцията.");
+      if (!state.providers.length && !state.social) this._toast("Настрой SearXNG, YouTube или Social to Mealie в настройките на интеграцията.");
     } catch (error) { this._toast(this._error(error)); }
+  }
+
+  _setupLinkImport() {
+    const card = this.root.querySelector("#linkcard");
+    const form = this.root.querySelector("#linkform");
+    const input = this.root.querySelector("#link");
+    const output = this.root.querySelector("#linkresult");
+    const button = this._importButton("Импортирай", "Обработва се…", () => {
+      output.textContent = "Social to Mealie тегли видеото, транскрибира го и създава рецептата. Обикновено отнема 1–2 минути.";
+      return this._hass.callWS({ type: "mealie_discover/import_social", url: input.value.trim() });
+    }, () => { output.textContent = ""; });
+    button.type = "submit";
+    form.append(button);
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (button._result) return;
+      button.click();
+    });
+    input.addEventListener("input", () => button._reset());
+    card.hidden = false;
+  }
+
+  // One button for a recipe: Add → working… → Open in Mealie.
+  _importButton(label, busy, run, done) {
+    const button = element("button", "primary", `${icon("plus")}<span>${label}</span>`);
+    button.type = "button";
+    button._reset = () => {
+      if (button.disabled) return;
+      button._result = undefined;
+      button.classList.remove("done");
+      button.innerHTML = `${icon("plus")}<span>${label}</span>`;
+    };
+    button.addEventListener("click", async (event) => {
+      event.preventDefault();
+      if (button.disabled) return;
+      if (button._result) {
+        if (this._mealiePanel) this._openRecipe(button._result);
+        else window.open(button._result.url, "_blank", "noopener");
+        return;
+      }
+      const form = button.closest("form");
+      if (form && !form.reportValidity()) return;
+      button.disabled = true;
+      button.innerHTML = `<span class="spinner"></span><span>${busy}</span>`;
+      try {
+        const result = await run();
+        button._result = result;
+        button.classList.add("done");
+        button.innerHTML = `${icon("check")}<span>Отвори в Mealie</span>`;
+        this._toast(result.total
+          ? `Добавена в Mealie ✓ Свързани съставки: ${result.linked} от ${result.total}.`
+          : "Добавена в Mealie ✓");
+      } catch (error) {
+        button.innerHTML = `${icon("plus")}<span>${label}</span>`;
+        this._toast(this._error(error), 10000);
+      } finally {
+        button.disabled = false;
+        if (done) done();
+      }
+    });
+    return button;
   }
 
   _renderChips(selector, options, current, select) {
@@ -386,7 +477,7 @@ class MealieDiscoverPanel extends HTMLElement {
     body.append(source, title);
 
     const warning = recipe.provider === "youtube"
-      ? "Импортът на видео изисква AI в Mealie."
+      ? (this._social ? "Импортът минава през Social to Mealie и отнема 1–2 минути." : "Импортът на видео изисква AI в Mealie.")
       : recipe.is_recipe ? "" : "Страницата няма структурирана рецепта – импортът може да не успее.";
     if (warning) {
       const note = element("div", "note");
@@ -395,35 +486,15 @@ class MealieDiscoverPanel extends HTMLElement {
     }
 
     const actions = element("div", "actions");
-    const add = element("button", "primary", `${icon("plus")}<span>Добави в Mealie</span>`);
-    add.type = "button";
+    const video = recipe.provider === "youtube" && this._social;
+    const add = this._importButton("Добави в Mealie", video ? "Обработва видеото…" : "Импортиране…",
+      () => this._hass.callWS({ type: "mealie_discover/import", url: recipe.url }));
     const preview = element("a", "icon-btn", icon("open"));
     preview.href = recipe.url;
     preview.target = "_blank";
     preview.rel = "noopener noreferrer";
     preview.title = "Виж оригинала";
     preview.setAttribute("aria-label", "Виж оригинала");
-    add.addEventListener("click", async () => {
-      if (add._result) {
-        if (this._mealiePanel) this._openRecipe(add._result);
-        else window.open(add._result.url, "_blank", "noopener");
-        return;
-      }
-      add.disabled = true;
-      add.innerHTML = `<span class="spinner"></span><span>Импортиране…</span>`;
-      try {
-        const result = await this._hass.callWS({ type: "mealie_discover/import", url: recipe.url });
-        add._result = result;
-        add.classList.add("done");
-        add.innerHTML = `${icon("check")}<span>Отвори в Mealie</span>`;
-        this._toast(result.total
-          ? `Добавена в Mealie ✓ Свързани съставки: ${result.linked} от ${result.total}.`
-          : "Добавена в Mealie ✓");
-      } catch (error) {
-        add.innerHTML = `${icon("plus")}<span>Добави в Mealie</span>`;
-        this._toast(this._error(error), 8000);
-      } finally { add.disabled = false; }
-    });
     actions.append(add, preview);
     body.append(actions);
     card.append(body);

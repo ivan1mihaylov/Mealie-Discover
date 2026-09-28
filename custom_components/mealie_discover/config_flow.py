@@ -14,6 +14,7 @@ from .const import (
     CONF_MEALIE_TOKEN,
     CONF_MEALIE_URL,
     CONF_SEARXNG_URL,
+    CONF_SOCIAL_URL,
     CONF_YOUTUBE_KEY,
     DOMAIN,
 )
@@ -46,6 +47,7 @@ def _schema(defaults: dict[str, Any]) -> vol.Schema:
             vol.Required(CONF_MEALIE_TOKEN, **field(CONF_MEALIE_TOKEN)): str,
             vol.Optional(CONF_SEARXNG_URL, **field(CONF_SEARXNG_URL)): str,
             vol.Optional(CONF_YOUTUBE_KEY, **field(CONF_YOUTUBE_KEY)): str,
+            vol.Optional(CONF_SOCIAL_URL, **field(CONF_SOCIAL_URL)): str,
         }
     )
 
@@ -58,18 +60,18 @@ class MealieDiscoverConfigFlow(ConfigFlow, domain=DOMAIN):
     _detected: dict[str, str] | None = None
 
     async def _detect(self) -> dict[str, str]:
-        """Look for SearXNG and Mealie add-ons once per flow."""
+        """Look for SearXNG, Mealie and Social to Mealie add-ons once per flow."""
         if self._detected is None:
             self._detected = await async_detect_urls(self.hass)
         return self._detected
 
     def _placeholders(self) -> dict[str, str]:
-        names = {CONF_SEARXNG_URL: "SearXNG", CONF_MEALIE_URL: "Mealie"}
+        names = {CONF_SEARXNG_URL: "SearXNG", CONF_MEALIE_URL: "Mealie", CONF_SOCIAL_URL: "Social to Mealie"}
         found = [f"{names[key]}: {url}" for key, url in (self._detected or {}).items()]
         return {"detected": ", ".join(found) or "—"}
 
     async def _validate(self, user_input: dict[str, Any]) -> tuple[dict[str, Any], dict[str, str]]:
-        """Normalize the form and check Mealie and SearXNG from Home Assistant."""
+        """Normalize the form and check Mealie, SearXNG and Social to Mealie from Home Assistant."""
         errors: dict[str, str] = {}
         data = {
             CONF_MEALIE_URL: _clean_url(user_input[CONF_MEALIE_URL]),
@@ -83,7 +85,11 @@ class MealieDiscoverConfigFlow(ConfigFlow, domain=DOMAIN):
                 errors[CONF_SEARXNG_URL] = "invalid_url"
         if youtube := (user_input.get(CONF_YOUTUBE_KEY) or "").strip():
             data[CONF_YOUTUBE_KEY] = youtube
-        if not searxng and not youtube:
+        if social := (user_input.get(CONF_SOCIAL_URL) or "").strip():
+            data[CONF_SOCIAL_URL] = _clean_url(social)
+            if data[CONF_SOCIAL_URL] is None:
+                errors[CONF_SOCIAL_URL] = "invalid_url"
+        if not searxng and not youtube and not social:
             errors["base"] = "provider_required"
         if errors:
             return data, errors
@@ -99,6 +105,11 @@ class MealieDiscoverConfigFlow(ConfigFlow, domain=DOMAIN):
                 await discovery.check_searxng()
             except DiscoveryError as exc:
                 errors[CONF_SEARXNG_URL] = exc.code
+        if social:
+            try:
+                await discovery.check_social()
+            except DiscoveryError as exc:
+                errors[CONF_SOCIAL_URL] = exc.code
         return data, errors
 
     async def async_step_user(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
