@@ -13,6 +13,9 @@ jobs:
       - uses: hacs/action@main
         with:
           category: integration
+          # Repository description/topics are GitHub settings and can be added
+          # before submitting to the default HACS catalog.
+          ignore: description topics
   hassfest:
     runs-on: ubuntu-latest
     steps:
