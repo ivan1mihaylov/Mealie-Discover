@@ -1,3 +1,1 @@
-- **Open** after an import now shows the recipe inside Mealie Discover (photo, time, servings, ingredients and steps) instead of loading Mealie's recipe page through the add-on's ingress, which kept reloading empty pages on some setups. Ingredients can be ticked off while cooking.
-- **Open in Mealie** in the recipe view goes to the Mealie sidebar panel when Mealie is an add-on, otherwise to the recipe in a browser tab.
-- Opening a recipe no longer needs an administrator account.
+- Fixed **Open in Mealie** after a Social to Mealie import reloading empty pages. The recipe path is now built like for website imports instead of being taken from the add-on, whose URL depends on its own `MEALIE_URL` setting (a trailing slash there produced `//g/...`).
