@@ -12,14 +12,13 @@ from .discovery import DiscoveryError, RecipeDiscovery
 
 
 def _service(hass: HomeAssistant) -> RecipeDiscovery:
-    return next(iter(hass.data[DOMAIN].values()))
+    for entry in hass.config_entries.async_loaded_entries(DOMAIN):
+        return entry.runtime_data
+    raise DiscoveryError("Интеграцията Mealie Discover не е заредена.", "not_loaded")
 
 
 @callback
 def async_register(hass: HomeAssistant) -> None:
-    if hass.data.get(f"{DOMAIN}_ws_registered"):
-        return
-    hass.data[f"{DOMAIN}_ws_registered"] = True
     for handler in (state, search, import_recipe):
         ws.async_register_command(hass, handler)
 
@@ -27,7 +26,10 @@ def async_register(hass: HomeAssistant) -> None:
 @ws.websocket_command({vol.Required("type"): f"{DOMAIN}/state"})
 @ws.async_response
 async def state(hass: HomeAssistant, connection: ws.ActiveConnection, msg: dict) -> None:
-    connection.send_result(msg["id"], {"providers": _service(hass).providers})
+    try:
+        connection.send_result(msg["id"], {"providers": _service(hass).providers})
+    except DiscoveryError as exc:
+        connection.send_error(msg["id"], exc.code, str(exc))
 
 
 @ws.websocket_command({vol.Required("type"): f"{DOMAIN}/search", vol.Required("query"): vol.All(str, vol.Length(min=2, max=120)), vol.Required("provider"): vol.In(("web", "youtube"))})

@@ -3,21 +3,37 @@
     "step": {
       "user": {
         "title": "Connect Mealie Discover",
-        "description": "Enter the Mealie URL reachable from Home Assistant, an API token, and at least one search provider. Google search needs both an API key and a Programmable Search Engine ID.",
+        "description": "Enter the Mealie URL reachable from Home Assistant, an API token, and at least one search provider: a SearXNG instance with JSON output enabled and/or a YouTube Data API key.",
         "data": {
           "mealie_url": "Mealie URL",
           "mealie_token": "Mealie API token",
-          "google_key": "Google Custom Search API key (optional)",
-          "google_cx": "Programmable Search Engine ID (optional)",
+          "searxng_url": "SearXNG URL (optional)",
+          "youtube_key": "YouTube Data API key (optional)"
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigure Mealie Discover",
+        "description": "Enter the Mealie URL reachable from Home Assistant, an API token, and at least one search provider: a SearXNG instance with JSON output enabled and/or a YouTube Data API key.",
+        "data": {
+          "mealie_url": "Mealie URL",
+          "mealie_token": "Mealie API token",
+          "searxng_url": "SearXNG URL (optional)",
           "youtube_key": "YouTube Data API key (optional)"
         }
       }
     },
     "error": {
       "invalid_url": "Enter an HTTP or HTTPS URL without credentials or query parameters",
-      "google_pair": "Enter both Google search fields or leave both empty",
-      "provider_required": "Configure at least one search provider"
+      "provider_required": "Configure SearXNG, YouTube, or both",
+      "cannot_connect": "Cannot reach Mealie from Home Assistant, or the URL is not Mealie's API address",
+      "invalid_auth": "Mealie rejected the API token",
+      "searxng_unreachable": "Cannot reach SearXNG from Home Assistant",
+      "searxng_json": "SearXNG refused JSON output. Add \"json\" to search.formats in settings.yml"
     },
-    "abort": {"already_configured": "Mealie Discover is already configured"}
+    "abort": {
+      "already_configured": "Mealie Discover is already configured",
+      "single_instance_allowed": "Mealie Discover is already configured",
+      "reconfigure_successful": "Settings updated"
+    }
   }
 }
