@@ -131,9 +131,11 @@ class RecipeDiscovery:
     async def _web(self, query: str, language: str) -> list[dict]:
         url = f"{self.config[CONF_SEARXNG_URL]}/search"
         params = {"q": query, "format": "json"}
-        response = await self._json(
-            url, params={**params, "language": language, "categories": "general", "safesearch": 1}
-        )
+        filters = {"categories": "general", "safesearch": 1}
+        if language != "all":
+            # "all" is left to the instance: some SearXNG setups return nothing for language=all.
+            filters["language"] = language
+        response = await self._json(url, params={**params, **filters})
         if not response.get("results") and not _unresponsive(response):
             # Some instances or engines return nothing for these filters; retry with the
             # instance's own defaults, as its web page would search.
