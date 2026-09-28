@@ -3,32 +3,35 @@
     "step": {
       "user": {
         "title": "Свързване на Mealie Discover",
-        "description": "Въведете адреса на Mealie, достъпен от Home Assistant, API токен и поне един източник за търсене: SearXNG с разрешен JSON формат и/или YouTube Data API ключ. Открити добавки: {detected}. API токенът се създава в Mealie → профил → API Tokens.",
+        "description": "Въведете адреса на Mealie, достъпен от Home Assistant, API токен и поне едно от: SearXNG с разрешен JSON формат, YouTube Data API ключ или адрес на добавката Social to Mealie (импорт на YouTube видеа и линкове от Instagram, TikTok и Facebook). Открити добавки: {detected}. API токенът се създава в Mealie → профил → API Tokens.",
         "data": {
           "mealie_url": "Адрес на Mealie",
           "mealie_token": "API токен на Mealie",
           "searxng_url": "Адрес на SearXNG (незадължително)",
-          "youtube_key": "YouTube Data API ключ (незадължително)"
+          "youtube_key": "YouTube Data API ключ (незадължително)",
+          "social_url": "Адрес на Social to Mealie (незадължително)"
         }
       },
       "reconfigure": {
         "title": "Промяна на Mealie Discover",
-        "description": "Въведете адреса на Mealie, достъпен от Home Assistant, API токен и поне един източник за търсене: SearXNG с разрешен JSON формат и/или YouTube Data API ключ. Открити добавки: {detected}. API токенът се създава в Mealie → профил → API Tokens.",
+        "description": "Въведете адреса на Mealie, достъпен от Home Assistant, API токен и поне едно от: SearXNG с разрешен JSON формат, YouTube Data API ключ или адрес на добавката Social to Mealie (импорт на YouTube видеа и линкове от Instagram, TikTok и Facebook). Открити добавки: {detected}. API токенът се създава в Mealie → профил → API Tokens.",
         "data": {
           "mealie_url": "Адрес на Mealie",
           "mealie_token": "API токен на Mealie",
           "searxng_url": "Адрес на SearXNG (незадължително)",
-          "youtube_key": "YouTube Data API ключ (незадължително)"
+          "youtube_key": "YouTube Data API ключ (незадължително)",
+          "social_url": "Адрес на Social to Mealie (незадължително)"
         }
       }
     },
     "error": {
       "invalid_url": "Въведете HTTP или HTTPS адрес без потребител, парола и параметри",
-      "provider_required": "Настройте SearXNG, YouTube или и двете",
+      "provider_required": "Настройте SearXNG, YouTube или Social to Mealie",
       "cannot_connect": "Mealie не е достъпен от Home Assistant или адресът не е на неговото API",
       "invalid_auth": "Mealie отхвърли API токена",
       "searxng_unreachable": "SearXNG не е достъпен от Home Assistant",
-      "searxng_json": "SearXNG отказва JSON формат. Добавете \"json\" в search.formats в settings.yml"
+      "searxng_json": "SearXNG отказва JSON формат. Добавете \"json\" в search.formats в settings.yml",
+      "social_unreachable": "Social to Mealie не е достъпен на този адрес"
     },
     "abort": {
       "already_configured": "Mealie Discover вече е настроен",

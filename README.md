@@ -39,6 +39,15 @@ search:
 
 Search in any language. The panel has a language filter (all languages, Bulgarian or English, remembered per browser), and the integration adds “рецепта” or “recipe” to the query depending on its alphabet, unless you already wrote it. Public SearXNG instances usually block JSON requests, so use your own.
 
+### Social to Mealie (optional)
+
+With the [Social to Mealie](https://github.com/alexbelgium/hassio-addons/tree/master/social_to_mealie) add-on, videos are imported by downloading them, transcribing the audio and building the recipe with AI, which works much better than Mealie's own import for videos. Enter the add-on's URL, for example `http://<home-assistant-ip>:3000`; on Home Assistant OS it is detected and filled in when the add-on is running. When it is set:
+
+- **Add to Mealie** on YouTube results goes through the add-on.
+- A **Линк** (link) option appears next to Sites and YouTube. Selecting it turns the search bar into a field for Instagram, TikTok, Facebook, YouTube and other links the add-on supports, with an Import button.
+
+Imports through the add-on take a minute or two and use your OpenAI account.
+
 ### YouTube (optional)
 
 Enable YouTube Data API v3 in Google Cloud and enter an API key. YouTube search consumes API quota. The integration uses `search.list` and `videos.list` to retrieve the actual view counts.

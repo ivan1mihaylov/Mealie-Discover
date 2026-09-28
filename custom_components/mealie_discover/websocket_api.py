@@ -20,7 +20,7 @@ def _service(hass: HomeAssistant) -> RecipeDiscovery:
 
 @callback
 def async_register(hass: HomeAssistant) -> None:
-    for handler in (state, search, import_recipe):
+    for handler in (state, search, import_recipe, import_social):
         ws.async_register_command(hass, handler)
 
 
@@ -28,9 +28,14 @@ def async_register(hass: HomeAssistant) -> None:
 @ws.async_response
 async def state(hass: HomeAssistant, connection: ws.ActiveConnection, msg: dict) -> None:
     try:
-        providers = _service(hass).providers
+        service = _service(hass)
         connection.send_result(
-            msg["id"], {"providers": providers, "mealie_panel": await async_mealie_panel(hass)}
+            msg["id"],
+            {
+                "providers": service.providers,
+                "social": service.social,
+                "mealie_panel": await async_mealie_panel(hass),
+            },
         )
     except DiscoveryError as exc:
         connection.send_error(msg["id"], exc.code, str(exc))
@@ -50,5 +55,14 @@ async def search(hass: HomeAssistant, connection: ws.ActiveConnection, msg: dict
 async def import_recipe(hass: HomeAssistant, connection: ws.ActiveConnection, msg: dict) -> None:
     try:
         connection.send_result(msg["id"], await _service(hass).import_url(msg["url"]))
+    except DiscoveryError as exc:
+        connection.send_error(msg["id"], "import_failed", str(exc))
+
+
+@ws.websocket_command({vol.Required("type"): f"{DOMAIN}/import_social", vol.Required("url"): vol.All(str, vol.Length(min=8, max=2000))})
+@ws.async_response
+async def import_social(hass: HomeAssistant, connection: ws.ActiveConnection, msg: dict) -> None:
+    try:
+        connection.send_result(msg["id"], await _service(hass).import_social(msg["url"]))
     except DiscoveryError as exc:
         connection.send_error(msg["id"], "import_failed", str(exc))

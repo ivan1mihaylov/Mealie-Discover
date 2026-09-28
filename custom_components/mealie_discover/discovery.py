@@ -10,11 +10,17 @@ import json
 import logging
 import re
 from typing import Any
-from urllib.parse import quote, urlsplit
+from urllib.parse import quote, unquote, urlsplit
 
 from aiohttp import ClientError, ClientResponse, ClientSession
 
-from .const import CONF_MEALIE_TOKEN, CONF_MEALIE_URL, CONF_SEARXNG_URL, CONF_YOUTUBE_KEY
+from .const import (
+    CONF_MEALIE_TOKEN,
+    CONF_MEALIE_URL,
+    CONF_SEARXNG_URL,
+    CONF_SOCIAL_URL,
+    CONF_YOUTUBE_KEY,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -68,6 +74,11 @@ class RecipeDiscovery:
         return self.config[CONF_MEALIE_URL]
 
     @property
+    def social(self) -> bool:
+        """Whether a Social to Mealie add-on handles videos and social media links."""
+        return bool(self.config.get(CONF_SOCIAL_URL))
+
+    @property
     def _mealie_headers(self) -> dict[str, str]:
         return {"Authorization": f"Bearer {self.config[CONF_MEALIE_TOKEN]}"}
 
@@ -94,6 +105,18 @@ class RecipeDiscovery:
         except (TimeoutError, ClientError, ValueError) as exc:
             raise DiscoveryError("Mealie is unreachable", "cannot_connect") from exc
         self._group_slug = _group_slug(user)
+
+    async def check_social(self) -> None:
+        """Verify the URL serves Social to Mealie."""
+        try:
+            async with asyncio.timeout(15):
+                async with self.session.get(f"{self.config[CONF_SOCIAL_URL]}/manifest.webmanifest") as response:
+                    response.raise_for_status()
+                    body = await response.json(content_type=None)
+        except (TimeoutError, ClientError, ValueError) as exc:
+            raise DiscoveryError("Social to Mealie is unreachable", "social_unreachable") from exc
+        if not isinstance(body, dict) or "social-to-mealie" not in str(body.get("id", "")).lower():
+            raise DiscoveryError("Not a Social to Mealie address", "social_unreachable")
 
     async def check_searxng(self) -> None:
         """Verify SearXNG answers with its JSON output format enabled."""
@@ -258,6 +281,10 @@ class RecipeDiscovery:
         provider = self.allowed.get(url)
         if provider is None:
             raise DiscoveryError("Първо потърси и избери рецепта от резултатите.")
+        if provider == "youtube" and self.social:
+            result = await self.import_social(url)
+            self.allowed.pop(url, None)
+            return result
         try:
             async with asyncio.timeout(90):
                 async with self.session.post(
@@ -275,6 +302,35 @@ class RecipeDiscovery:
         self.allowed.pop(url, None)
         linked, total = await self._link_ingredients(slug)
         path = f"/g/{quote(await self._group(), safe='')}/r/{quote(slug, safe='')}"
+        return {"url": self._mealie_url + path, "path": path, "linked": linked, "total": total}
+
+    async def import_social(self, url: str) -> dict[str, Any]:
+        """Let the Social to Mealie add-on download, transcribe and import a video or post."""
+        if not self.social:
+            raise DiscoveryError("Social to Mealie не е настроен.")
+        parts = urlsplit(url.strip())
+        if parts.scheme not in ("http", "https") or not parts.hostname:
+            raise DiscoveryError("Въведи пълен линк, например https://www.instagram.com/reel/…")
+        try:
+            # Download, transcription and the AI step can take a few minutes for long videos.
+            async with asyncio.timeout(600):
+                async with self.session.post(
+                    f"{self.config[CONF_SOCIAL_URL]}/api/get-url",
+                    json={"url": url.strip(), "tags": []},
+                ) as response:
+                    body = await response.json(content_type=None)
+        except TimeoutError as exc:
+            raise DiscoveryError("Social to Mealie не завърши за 10 минути. Провери лога на добавката.") from exc
+        except (ClientError, ValueError) as exc:
+            raise DiscoveryError("Social to Mealie не отговори. Провери дали добавката работи и адреса ѝ.") from exc
+        created = body.get("createdRecipe") if isinstance(body, dict) else None
+        link = created.get("url") if isinstance(created, dict) else None
+        if not isinstance(link, str) or "/r/" not in link:
+            error = body.get("error") if isinstance(body, dict) else None
+            raise DiscoveryError(f"Social to Mealie не успя да създаде рецептата: {error or 'неизвестна грешка'}")
+        path = urlsplit(link).path
+        slug = unquote(path.rstrip("/").rsplit("/", 1)[-1])
+        linked, total = await self._link_ingredients(slug)
         return {"url": self._mealie_url + path, "path": path, "linked": linked, "total": total}
 
     async def _mealie(self, method: str, path: str, *, json: Any = None, timeout: int = 30) -> Any:

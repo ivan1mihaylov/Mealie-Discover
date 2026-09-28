@@ -8,13 +8,14 @@ const ICONS = {
   check: "M21 7 9 19l-5.5-5.5 1.41-1.41L9 16.17 19.59 5.59 21 7Z",
   open: "M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7m5 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7Z",
   close: "M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z",
+  link: "M10.59 13.41c.41.39.41 1.03 0 1.42-.39.39-1.03.39-1.42 0a5.003 5.003 0 0 1 0-7.07l3.54-3.54a5.003 5.003 0 0 1 7.07 0 5.003 5.003 0 0 1 0 7.07l-1.49 1.49c.01-.82-.12-1.64-.4-2.42l.47-.48a2.982 2.982 0 0 0 0-4.24 2.982 2.982 0 0 0-4.24 0l-3.53 3.53a2.982 2.982 0 0 0 0 4.24m2.82-4.24c.39-.39 1.03-.39 1.42 0a5.003 5.003 0 0 1 0 7.07l-3.54 3.54a5.003 5.003 0 0 1-7.07 0 5.003 5.003 0 0 1 0-7.07l1.49-1.49c-.01.82.12 1.64.4 2.43l-.47.47a2.982 2.982 0 0 0 0 4.24 2.982 2.982 0 0 0 4.24 0l3.53-3.53a2.982 2.982 0 0 0 0-4.24.973.973 0 0 1 0-1.42Z",
   back: "M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z",
   web: "M16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2 0-.68.06-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.65 15.65 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2Z",
   video: "M10 15l5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 5c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73Z",
 };
 const SUGGESTIONS = ["Боб чорба", "Мусака", "Леща яхния", "Баница", "Таратор", "Pancakes"];
 const LANGUAGES = [["all", "Всички езици"], ["bg", "Български"], ["en", "English"]];
-const PROVIDERS = { web: ["web", "Сайтове"], youtube: ["video", "YouTube"] };
+const PROVIDERS = { web: ["web", "Сайтове"], youtube: ["video", "YouTube"], link: ["link", "Линк"] };
 
 function icon(name, size = 18) {
   return `<svg viewBox="0 0 24 24" width="${size}" height="${size}" aria-hidden="true"><path fill="currentColor" d="${ICONS[name]}"/></svg>`;
@@ -95,7 +96,7 @@ class MealieDiscoverPanel extends HTMLElement {
           border:1px solid var(--md-line); border-radius:28px; padding:6px 6px 6px 18px; gap:10px;
           box-shadow:0 6px 24px rgba(0,0,0,.08); transition:border-color .2s, box-shadow .2s }
         .searchbar:focus-within { border-color:var(--md-accent); box-shadow:0 0 0 3px color-mix(in srgb, var(--md-accent) 25%, transparent) }
-        .searchbar > svg { color:var(--md-muted) }
+        #lead { display:flex; color:var(--md-muted) }
         .searchbar input { flex:1; min-width:0; border:0; outline:0; background:none; color:var(--md-text); font:inherit; font-size:17px; padding:10px 0 }
         .searchbar input::placeholder { color:var(--md-muted) }
         .searchbar input::-webkit-search-cancel-button { -webkit-appearance:none; appearance:none; display:none }
@@ -147,6 +148,10 @@ class MealieDiscoverPanel extends HTMLElement {
           background-size:200% 100%; animation:shimmer 1.2s infinite linear }
         .skeleton .line { height:14px; border-radius:7px }
         @keyframes shimmer { to { background-position:-200% 0 } }
+        .go.done { background:var(--md-success) }
+        .linkhint { margin:16px 2px 0; color:var(--md-muted); font-size:14px; line-height:1.5; display:none }
+        main.linkmode .linkhint { display:block }
+        main.linkmode #languages, main.linkmode #summary, main.linkmode #results, main.linkmode #empty { display:none }
         .empty { text-align:center; padding:48px 16px; color:var(--md-muted) }
         .empty .big { font-size:56px; margin-bottom:8px }
         .empty h3 { margin:0 0 6px; color:var(--md-text); font-size:19px }
@@ -173,12 +178,13 @@ class MealieDiscoverPanel extends HTMLElement {
           <h1>Какво ще готвим днес?</h1>
           <p>Намери популярни рецепти и ги добави в Mealie с едно докосване.</p>
           <form id="form" class="searchbar" role="search">
-            ${icon("search", 22)}
+            <span id="lead">${icon("search", 22)}</span>
             <input id="query" type="search" enterkeyhint="search" autocomplete="off" placeholder="Боб, мусака, баница…" required minlength="2" maxlength="120" />
             <button id="clear" class="clear" type="button" aria-label="Изчисти" hidden>${icon("close", 22)}</button>
             <button id="submit" class="go" type="submit">${icon("search")}<span>Търси</span></button>
           </form>
           <div class="filters"><div class="group" id="providers"></div><div class="group" id="languages"></div></div>
+          <div class="linkhint">Постави линк от Instagram, TikTok, Facebook, YouTube… Social to Mealie тегли видеото, транскрибира го и AI съставя рецептата. Отнема 1–2 минути.</div>
         </section>
         <div class="summary" id="summary" role="status"></div>
         <div class="grid" id="results"></div>
@@ -214,12 +220,16 @@ class MealieDiscoverPanel extends HTMLElement {
       chip.addEventListener("click", () => { root.querySelector("#query").value = text; this._toggleClear(); this._search(); });
       suggestions.append(chip);
     }
-    root.querySelector("#form").addEventListener("submit", (event) => { event.preventDefault(); this._search(); });
+    root.querySelector("#form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (this._provider === "link") this._importLink();
+      else this._search();
+    });
     const query = root.querySelector("#query");
     const clear = root.querySelector("#clear");
     const toggleClear = () => { clear.hidden = !query.value; };
-    query.addEventListener("input", toggleClear);
-    clear.addEventListener("click", () => { query.value = ""; toggleClear(); query.focus(); });
+    query.addEventListener("input", () => { toggleClear(); this._resetLink(); });
+    clear.addEventListener("click", () => { query.value = ""; toggleClear(); this._resetLink(); query.focus(); });
     this._toggleClear = toggleClear;
     root.querySelector("#back").addEventListener("click", () => this._closeRecipe());
     root.querySelector("#open-mealie").addEventListener("click", () => {
@@ -230,13 +240,119 @@ class MealieDiscoverPanel extends HTMLElement {
     try {
       const state = await this._hass.callWS({ type: "mealie_discover/state" });
       this._mealiePanel = state.mealie_panel;
-      if (!state.providers.includes(this._provider)) this._provider = state.providers[0];
-      this._renderChips("#providers", state.providers.map((name) => [name, ...PROVIDERS[name]]), () => this._provider, (value) => {
+      this._social = state.social;
+      const modes = [...state.providers, ...(state.social ? ["link"] : [])];
+      if (!modes.includes(this._provider)) this._provider = modes[0];
+      this._renderChips("#providers", modes.map((name) => [name, ...PROVIDERS[name]]), () => this._provider, (value) => {
         this._provider = value;
         storage("mealie-discover-provider", value);
+        this._setMode();
       });
-      if (!state.providers.length) this._toast("Настрой SearXNG или YouTube в настройките на интеграцията.");
+      this._setMode();
+      if (!modes.length) this._toast("Настрой SearXNG, YouTube или Social to Mealie в настройките на интеграцията.");
     } catch (error) { this._toast(this._error(error)); }
+  }
+
+  // "Линк" turns the search bar into a link field for Social to Mealie; each mode keeps its own text.
+  _setMode() {
+    const link = this._provider === "link";
+    const query = this.root.querySelector("#query");
+    this._texts = this._texts || {};
+    if (this._mode) this._texts[this._mode] = query.value;
+    this._mode = this._provider;
+    query.value = this._texts[this._mode] || "";
+    query.type = link ? "url" : "search";
+    query.inputMode = link ? "url" : "search";
+    query.enterKeyHint = link ? "go" : "search";
+    query.placeholder = link ? "Постави линк…" : "Боб, мусака, баница…";
+    query.minLength = link ? 8 : 2;
+    query.maxLength = link ? 2000 : 120;
+    this.root.querySelector("#lead").innerHTML = icon(link ? "link" : "search", 22);
+    this.root.querySelector("main").classList.toggle("linkmode", link);
+    this._toggleClear();
+    this._linkResult = undefined;
+    this._renderSubmit("idle");
+  }
+
+  _renderSubmit(state) {
+    const button = this.root.querySelector("#submit");
+    const link = this._provider === "link";
+    button.classList.toggle("done", state === "done");
+    button.innerHTML = state === "busy" ? `<span class="spinner"></span><span>Обработва се…</span>`
+      : state === "done" ? `${icon("check")}<span>Отвори</span>`
+      : link ? `${icon("plus")}<span>Импортирай</span>` : `${icon("search")}<span>Търси</span>`;
+  }
+
+  _resetLink() {
+    if (this._provider !== "link" || !this._linkResult) return;
+    this._linkResult = undefined;
+    this._renderSubmit("idle");
+  }
+
+  async _importLink() {
+    const button = this.root.querySelector("#submit");
+    if (button.disabled) return;
+    if (this._linkResult) {
+      if (this._mealiePanel) this._openRecipe(this._linkResult);
+      else window.open(this._linkResult.url, "_blank", "noopener");
+      return;
+    }
+    const url = this.root.querySelector("#query").value.trim();
+    if (!url) return;
+    button.disabled = true;
+    this._renderSubmit("busy");
+    try {
+      const result = await this._hass.callWS({ type: "mealie_discover/import_social", url });
+      this._linkResult = result;
+      this._renderSubmit("done");
+      this._toast(result.total
+        ? `Добавена в Mealie ✓ Свързани съставки: ${result.linked} от ${result.total}.`
+        : "Добавена в Mealie ✓");
+    } catch (error) {
+      this._renderSubmit("idle");
+      this._toast(this._error(error), 10000);
+    } finally { button.disabled = false; }
+  }
+
+  // One button for a recipe: Add → working… → Open in Mealie.
+  _importButton(label, busy, run, done) {
+    const button = element("button", "primary", `${icon("plus")}<span>${label}</span>`);
+    button.type = "button";
+    button._reset = () => {
+      if (button.disabled) return;
+      button._result = undefined;
+      button.classList.remove("done");
+      button.innerHTML = `${icon("plus")}<span>${label}</span>`;
+    };
+    button.addEventListener("click", async (event) => {
+      event.preventDefault();
+      if (button.disabled) return;
+      if (button._result) {
+        if (this._mealiePanel) this._openRecipe(button._result);
+        else window.open(button._result.url, "_blank", "noopener");
+        return;
+      }
+      const form = button.closest("form");
+      if (form && !form.reportValidity()) return;
+      button.disabled = true;
+      button.innerHTML = `<span class="spinner"></span><span>${busy}</span>`;
+      try {
+        const result = await run();
+        button._result = result;
+        button.classList.add("done");
+        button.innerHTML = `${icon("check")}<span>Отвори в Mealie</span>`;
+        this._toast(result.total
+          ? `Добавена в Mealie ✓ Свързани съставки: ${result.linked} от ${result.total}.`
+          : "Добавена в Mealie ✓");
+      } catch (error) {
+        button.innerHTML = `${icon("plus")}<span>${label}</span>`;
+        this._toast(this._error(error), 10000);
+      } finally {
+        button.disabled = false;
+        if (done) done();
+      }
+    });
+    return button;
   }
 
   _renderChips(selector, options, current, select) {
@@ -386,7 +502,7 @@ class MealieDiscoverPanel extends HTMLElement {
     body.append(source, title);
 
     const warning = recipe.provider === "youtube"
-      ? "Импортът на видео изисква AI в Mealie."
+      ? (this._social ? "Импортът минава през Social to Mealie и отнема 1–2 минути." : "Импортът на видео изисква AI в Mealie.")
       : recipe.is_recipe ? "" : "Страницата няма структурирана рецепта – импортът може да не успее.";
     if (warning) {
       const note = element("div", "note");
@@ -395,35 +511,15 @@ class MealieDiscoverPanel extends HTMLElement {
     }
 
     const actions = element("div", "actions");
-    const add = element("button", "primary", `${icon("plus")}<span>Добави в Mealie</span>`);
-    add.type = "button";
+    const video = recipe.provider === "youtube" && this._social;
+    const add = this._importButton("Добави в Mealie", video ? "Обработва видеото…" : "Импортиране…",
+      () => this._hass.callWS({ type: "mealie_discover/import", url: recipe.url }));
     const preview = element("a", "icon-btn", icon("open"));
     preview.href = recipe.url;
     preview.target = "_blank";
     preview.rel = "noopener noreferrer";
     preview.title = "Виж оригинала";
     preview.setAttribute("aria-label", "Виж оригинала");
-    add.addEventListener("click", async () => {
-      if (add._result) {
-        if (this._mealiePanel) this._openRecipe(add._result);
-        else window.open(add._result.url, "_blank", "noopener");
-        return;
-      }
-      add.disabled = true;
-      add.innerHTML = `<span class="spinner"></span><span>Импортиране…</span>`;
-      try {
-        const result = await this._hass.callWS({ type: "mealie_discover/import", url: recipe.url });
-        add._result = result;
-        add.classList.add("done");
-        add.innerHTML = `${icon("check")}<span>Отвори в Mealie</span>`;
-        this._toast(result.total
-          ? `Добавена в Mealie ✓ Свързани съставки: ${result.linked} от ${result.total}.`
-          : "Добавена в Mealie ✓");
-      } catch (error) {
-        add.innerHTML = `${icon("plus")}<span>Добави в Mealie</span>`;
-        this._toast(this._error(error), 8000);
-      } finally { add.disabled = false; }
-    });
     actions.append(add, preview);
     body.append(actions);
     card.append(body);
