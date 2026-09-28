@@ -129,16 +129,15 @@ class RecipeDiscovery:
         return results
 
     async def _web(self, query: str, language: str) -> list[dict]:
+        url = f"{self.config[CONF_SEARXNG_URL]}/search"
+        params = {"q": query, "format": "json"}
         response = await self._json(
-            f"{self.config[CONF_SEARXNG_URL]}/search",
-            params={
-                "q": query,
-                "format": "json",
-                "language": language,
-                "categories": "general",
-                "safesearch": 1,
-            },
+            url, params={**params, "language": language, "categories": "general", "safesearch": 1}
         )
+        if not response.get("results") and not _unresponsive(response):
+            # Some instances or engines return nothing for these filters; retry with the
+            # instance's own defaults, as its web page would search.
+            response = await self._json(url, params=params)
         items: list[dict] = []
         seen: set[str] = set()
         for row in response.get("results", []):

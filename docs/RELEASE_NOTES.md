@@ -1,1 +1,3 @@
-- When SearXNG returns no results because its search engines are blocked or rate limited, the panel now names the engines and the reason (for example "google (CAPTCHA)") instead of showing "no results".
+- Website search retries with SearXNG's own defaults when the language, category and safe-search filters return nothing, so instances whose engines ignore those filters still give results.
+- When SearXNG returns no results because its search engines are blocked or rate limited, the panel names the engines and the reason (for example "google (CAPTCHA)") instead of showing "no results".
+- A larger clear button in the search bar replaces the browser's small one.
