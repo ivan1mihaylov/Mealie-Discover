@@ -129,16 +129,17 @@ class RecipeDiscovery:
         return results
 
     async def _web(self, query: str, language: str) -> list[dict]:
-        response = await self._json(
-            f"{self.config[CONF_SEARXNG_URL]}/search",
-            params={
-                "q": query,
-                "format": "json",
-                "language": language,
-                "categories": "general",
-                "safesearch": 1,
-            },
-        )
+        url = f"{self.config[CONF_SEARXNG_URL]}/search"
+        params = {"q": query, "format": "json"}
+        filters = {"categories": "general", "safesearch": 1}
+        if language != "all":
+            # "all" is left to the instance: some SearXNG setups return nothing for language=all.
+            filters["language"] = language
+        response = await self._json(url, params={**params, **filters})
+        if not response.get("results") and not _unresponsive(response):
+            # Some instances or engines return nothing for these filters; retry with the
+            # instance's own defaults, as its web page would search.
+            response = await self._json(url, params=params)
         items: list[dict] = []
         seen: set[str] = set()
         for row in response.get("results", []):
@@ -161,6 +162,12 @@ class RecipeDiscovery:
             })
             if len(items) >= _WEB_RESULTS:
                 break
+        if not items and (failed := _unresponsive(response)):
+            # SearXNG answers with an empty list when its engines are blocked or rate limited.
+            raise DiscoveryError(
+                "SearXNG не върна резултати, защото търсачките му не отговориха: "
+                f"{failed}. Изчакай малко или включи още търсачки в SearXNG (DuckDuckGo, Brave, Bing)."
+            )
         await asyncio.gather(*(self._enrich(item) for item in items))
         # Pages with a schema.org Recipe come first (Mealie can import those),
         # then the most rated; ties keep the search engine's order.
@@ -353,6 +360,16 @@ async def _import_error(response: ClientResponse, provider: str) -> str:
     if provider == "youtube":
         message += " За видео е необходим AI импорт (OpenAI) в Mealie."
     return message
+
+
+def _unresponsive(response: Any) -> str:
+    """SearXNG's unresponsive engines as "google (CAPTCHA), bing (timeout)"."""
+    engines = response.get("unresponsive_engines") if isinstance(response, dict) else None
+    names = []
+    for engine in engines or []:
+        if isinstance(engine, (list, tuple)) and engine:
+            names.append(f"{engine[0]} ({engine[1]})" if len(engine) > 1 and engine[1] else str(engine[0]))
+    return ", ".join(names)
 
 
 def _ingredient_text(item: Any) -> str:

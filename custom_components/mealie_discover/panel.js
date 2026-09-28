@@ -7,6 +7,7 @@ const ICONS = {
   plus: "M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2Z",
   check: "M21 7 9 19l-5.5-5.5 1.41-1.41L9 16.17 19.59 5.59 21 7Z",
   open: "M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7m5 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7Z",
+  close: "M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z",
   back: "M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z",
   web: "M16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2 0-.68.06-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.65 15.65 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2Z",
   video: "M10 15l5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 5c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73Z",
@@ -97,6 +98,10 @@ class MealieDiscoverPanel extends HTMLElement {
         .searchbar > svg { color:var(--md-muted) }
         .searchbar input { flex:1; min-width:0; border:0; outline:0; background:none; color:var(--md-text); font:inherit; font-size:17px; padding:10px 0 }
         .searchbar input::placeholder { color:var(--md-muted) }
+        .searchbar input::-webkit-search-cancel-button { -webkit-appearance:none; appearance:none; display:none }
+        .clear { display:grid; place-items:center; width:40px; height:40px; margin-right:-4px; border-radius:50%;
+          color:var(--md-muted); background:var(--md-surface) }
+        .clear:active { transform:scale(.94) }
         .go { display:flex; align-items:center; gap:6px; background:var(--md-accent); color:var(--text-primary-color, #fff);
           border-radius:22px; padding:11px 18px; font-weight:500; transition:transform .1s, opacity .2s }
         .go:active { transform:scale(.97) }
@@ -170,6 +175,7 @@ class MealieDiscoverPanel extends HTMLElement {
           <form id="form" class="searchbar" role="search">
             ${icon("search", 22)}
             <input id="query" type="search" enterkeyhint="search" autocomplete="off" placeholder="Боб, мусака, баница…" required minlength="2" maxlength="120" />
+            <button id="clear" class="clear" type="button" aria-label="Изчисти" hidden>${icon("close", 22)}</button>
             <button id="submit" class="go" type="submit">${icon("search")}<span>Търси</span></button>
           </form>
           <div class="filters"><div class="group" id="providers"></div><div class="group" id="languages"></div></div>
@@ -205,10 +211,16 @@ class MealieDiscoverPanel extends HTMLElement {
       const chip = element("button", "chip", "");
       chip.type = "button";
       chip.textContent = text;
-      chip.addEventListener("click", () => { root.querySelector("#query").value = text; this._search(); });
+      chip.addEventListener("click", () => { root.querySelector("#query").value = text; this._toggleClear(); this._search(); });
       suggestions.append(chip);
     }
     root.querySelector("#form").addEventListener("submit", (event) => { event.preventDefault(); this._search(); });
+    const query = root.querySelector("#query");
+    const clear = root.querySelector("#clear");
+    const toggleClear = () => { clear.hidden = !query.value; };
+    query.addEventListener("input", toggleClear);
+    clear.addEventListener("click", () => { query.value = ""; toggleClear(); query.focus(); });
+    this._toggleClear = toggleClear;
     root.querySelector("#back").addEventListener("click", () => this._closeRecipe());
     root.querySelector("#open-mealie").addEventListener("click", () => {
       this._closeRecipe();
