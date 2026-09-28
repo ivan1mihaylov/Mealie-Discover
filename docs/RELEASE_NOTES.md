@@ -6,4 +6,4 @@ Search recipe websites through your own SearXNG instance instead of Google Custo
 - “Open recipe” links use your Mealie group instead of assuming `home`.
 - Reloading the integration no longer fails; results from several searches or tabs can all be imported.
 - The panel has the sidebar menu button on phones, and updates are no longer hidden by the browser cache.
-- YouTube search prefers Bulgarian videos.
+- Search is no longer limited to Bulgarian: the panel has a language filter (all languages, Bulgarian, English), and “рецепта” or “recipe” is added to the query based on its alphabet.

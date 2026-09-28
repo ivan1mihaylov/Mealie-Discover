@@ -28,6 +28,9 @@ _PAGE_HEADERS = {
 _LD_JSON = re.compile(
     r"<script[^>]*type=[\"']application/ld\+json[\"'][^>]*>(.*?)</script>", re.I | re.S
 )
+_CYRILLIC = re.compile(r"[\u0400-\u04FF]")
+_RECIPE_WORD = re.compile(r"рецепт|recipe", re.I)
+LANGUAGES = ("all", "bg", "en")
 _DURATION = re.compile(r"^P(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:[\d.]+S)?)?$", re.I)
 
 
@@ -106,13 +109,14 @@ class RecipeDiscovery:
         if not isinstance(body, dict) or "results" not in body:
             raise DiscoveryError("SearXNG returned no results list", "searxng_unreachable")
 
-    async def search(self, query: str, provider: str) -> list[dict]:
+    async def search(self, query: str, provider: str, language: str = "all") -> list[dict]:
         if provider not in self.providers:
             raise DiscoveryError("Този източник не е настроен.")
+        query = _recipe_query(query)
         if provider == "youtube":
-            results = await self._youtube(query)
+            results = await self._youtube(query, language)
         else:
-            results = await self._web(query)
+            results = await self._web(query, language)
         # URL is never accepted for import unless it was returned by a provider.
         for item in results:
             self.allowed[item["url"]] = item["provider"]
@@ -121,13 +125,13 @@ class RecipeDiscovery:
             self.allowed.popitem(last=False)
         return results
 
-    async def _web(self, query: str) -> list[dict]:
+    async def _web(self, query: str, language: str) -> list[dict]:
         response = await self._json(
             f"{self.config[CONF_SEARXNG_URL]}/search",
             params={
-                "q": query + " рецепта",
+                "q": query,
                 "format": "json",
-                "language": "bg",
+                "language": language,
                 "categories": "general",
                 "safesearch": 1,
             },
@@ -196,21 +200,21 @@ class RecipeDiscovery:
             image = _image(recipe.get("image"))
             item["image"] = image if _public_https(image) else ""
 
-    async def _youtube(self, query: str) -> list[dict]:
+    async def _youtube(self, query: str, language: str) -> list[dict]:
         key = self.config[CONF_YOUTUBE_KEY]
-        found = await self._json(
-            "https://www.googleapis.com/youtube/v3/search",
-            params={
-                "part": "snippet",
-                "type": "video",
-                "order": "viewCount",
-                "q": query + " рецепта",
-                "relevanceLanguage": "bg",
-                "regionCode": "BG",
-                "maxResults": 20,
-                "key": key,
-            },
-        )
+        params = {
+            "part": "snippet",
+            "type": "video",
+            "order": "viewCount",
+            "q": query,
+            "maxResults": 20,
+            "key": key,
+        }
+        if language != "all":
+            params["relevanceLanguage"] = language
+        if language == "bg":
+            params["regionCode"] = "BG"
+        found = await self._json("https://www.googleapis.com/youtube/v3/search", params=params)
         rows = found.get("items", [])
         ids = [row.get("id", {}).get("videoId") for row in rows]
         ids = [video_id for video_id in ids if video_id]
@@ -290,6 +294,13 @@ async def _import_error(response: ClientResponse, provider: str) -> str:
     if provider == "youtube":
         message += " За видео е необходим AI импорт (OpenAI) в Mealie."
     return message
+
+
+def _recipe_query(query: str) -> str:
+    """Add "recipe" in the query's alphabet unless the user already wrote it."""
+    if _RECIPE_WORD.search(query):
+        return query
+    return f"{query} {'рецепта' if _CYRILLIC.search(query) else 'recipe'}"
 
 
 def _group_slug(user: Any) -> str:
