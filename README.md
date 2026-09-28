@@ -24,7 +24,7 @@ To change the URLs, token or keys later: Settings → Devices & services → Mea
 
 ### Mealie connection
 
-Create a long-lived API token in your Mealie user profile. Enter a URL reachable **from Home Assistant Core**, for example `http://<mealie-host>:9000`. If Mealie is a Home Assistant app/add-on, use its internal address and port if it exposes one; its sidebar ingress URL may not be suitable for direct API access. The “Open recipe” link also uses this configured URL (with your Mealie group), so use a URL reachable by your browser if possible. Avoid putting the token in the URL.
+Create a long-lived API token in your Mealie user profile. Enter a URL reachable **from Home Assistant Core**, for example `http://<mealie-host>:9000`. If Mealie is a Home Assistant app/add-on, use its internal address and port if it exposes one; its sidebar ingress URL may not be suitable for direct API access. If Mealie runs as a Home Assistant add-on with a sidebar panel, “Open recipe” shows the new recipe inside Home Assistant through the add-on's ingress, with a button to open the Mealie panel; this needs an administrator account. Otherwise the link opens the configured URL in a browser tab, so use a URL your browser can reach. Avoid putting the token in the URL.
 
 ### Recipe websites (optional)
 

@@ -7,6 +7,7 @@ import voluptuous as vol
 from homeassistant.components import websocket_api as ws
 from homeassistant.core import HomeAssistant, callback
 
+from .addons import async_mealie_panel
 from .const import DOMAIN
 from .discovery import LANGUAGES, DiscoveryError, RecipeDiscovery
 
@@ -27,7 +28,10 @@ def async_register(hass: HomeAssistant) -> None:
 @ws.async_response
 async def state(hass: HomeAssistant, connection: ws.ActiveConnection, msg: dict) -> None:
     try:
-        connection.send_result(msg["id"], {"providers": _service(hass).providers})
+        providers = _service(hass).providers
+        connection.send_result(
+            msg["id"], {"providers": providers, "mealie_panel": await async_mealie_panel(hass)}
+        )
     except DiscoveryError as exc:
         connection.send_error(msg["id"], exc.code, str(exc))
 
@@ -45,6 +49,6 @@ async def search(hass: HomeAssistant, connection: ws.ActiveConnection, msg: dict
 @ws.async_response
 async def import_recipe(hass: HomeAssistant, connection: ws.ActiveConnection, msg: dict) -> None:
     try:
-        connection.send_result(msg["id"], {"url": await _service(hass).import_url(msg["url"])})
+        connection.send_result(msg["id"], await _service(hass).import_url(msg["url"]))
     except DiscoveryError as exc:
         connection.send_error(msg["id"], "import_failed", str(exc))
