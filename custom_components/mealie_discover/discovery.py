@@ -328,9 +328,11 @@ class RecipeDiscovery:
         if not isinstance(link, str) or "/r/" not in link:
             error = body.get("error") if isinstance(body, dict) else None
             raise DiscoveryError(f"Social to Mealie не успя да създаде рецептата: {error or 'неизвестна грешка'}")
-        path = urlsplit(link).path
-        slug = unquote(path.rstrip("/").rsplit("/", 1)[-1])
+        # Only the slug is taken from the add-on: its URL depends on its own MEALIE_URL
+        # setting (a trailing slash gives "//g/..."), so the path is built like other imports.
+        slug = unquote(urlsplit(link).path.rstrip("/").rsplit("/", 1)[-1])
         linked, total = await self._link_ingredients(slug)
+        path = f"/g/{quote(await self._group(), safe='')}/r/{quote(slug, safe='')}"
         return {"url": self._mealie_url + path, "path": path, "linked": linked, "total": total}
 
     async def _mealie(self, method: str, path: str, *, json: Any = None, timeout: int = 30) -> Any:
