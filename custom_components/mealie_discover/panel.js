@@ -189,7 +189,9 @@ class MealieDiscoverPanel extends HTMLElement {
       try {
         const result = await this._hass.callWS({ type: "mealie_discover/import", url: recipe.url });
         add.textContent = "Добавена ✓";
-        this._status("Рецептата е добавена в Mealie.");
+        this._status(result.total
+          ? `Рецептата е добавена в Mealie. Свързани съставки: ${result.linked} от ${result.total}; останалите са като текст.`
+          : "Рецептата е добавена в Mealie.");
         let created;
         if (this._mealiePanel) {
           created = document.createElement("button");

@@ -6,7 +6,7 @@ Find recipes from the Home Assistant sidebar and import a selected URL into Meal
 
 - **Recipe websites:** results from your [SearXNG](https://docs.searxng.org/) instance. Home Assistant opens each result and reads its schema.org `Recipe` data, so the rating, number of ratings and cooking time are shown when the site publishes them. Pages with a recipe come first, most rated on top; pages without one are marked because Mealie will likely fail to import them. Search position is **not** a view count.
 - **YouTube:** videos sorted by actual YouTube view counts, with likes when available. Video import may require Mealie's AI import feature and is not guaranteed to work with every video.
-- **Add to Mealie:** sends the selected URL to Mealie's `POST /api/recipes/create/url` API. The source must be supported by Mealie's scraper; Mealie's error message is shown when it is not.
+- **Add to Mealie:** sends the selected URL to Mealie's `POST /api/recipes/create/url` API. The source must be supported by Mealie's scraper; Mealie's error message is shown when it is not. After the import, the ingredients are run through Mealie's ingredient parser (AI when OpenAI is configured in Mealie, otherwise the built-in parser) and linked to your existing foods and units; lines whose food is not in Mealie stay as text.
 
 Search is on demand. API keys and the Mealie token stay in Home Assistant's config entry and are not sent to the browser.
 
