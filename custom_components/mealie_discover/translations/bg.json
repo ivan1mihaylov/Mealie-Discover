@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Свързване на Mealie Discover",
-        "description": "Въведете адреса на Mealie, достъпен от Home Assistant, API токен и поне един източник за търсене: SearXNG с разрешен JSON формат и/или YouTube Data API ключ.",
+        "description": "Въведете адреса на Mealie, достъпен от Home Assistant, API токен и поне един източник за търсене: SearXNG с разрешен JSON формат и/или YouTube Data API ключ. Открити добавки: {detected}. API токенът се създава в Mealie → профил → API Tokens.",
         "data": {
           "mealie_url": "Адрес на Mealie",
           "mealie_token": "API токен на Mealie",
@@ -13,7 +13,7 @@
       },
       "reconfigure": {
         "title": "Промяна на Mealie Discover",
-        "description": "Въведете адреса на Mealie, достъпен от Home Assistant, API токен и поне един източник за търсене: SearXNG с разрешен JSON формат и/или YouTube Data API ключ.",
+        "description": "Въведете адреса на Mealie, достъпен от Home Assistant, API токен и поне един източник за търсене: SearXNG с разрешен JSON формат и/или YouTube Data API ключ. Открити добавки: {detected}. API токенът се създава в Mealie → профил → API Tokens.",
         "data": {
           "mealie_url": "Адрес на Mealie",
           "mealie_token": "API токен на Mealie",
