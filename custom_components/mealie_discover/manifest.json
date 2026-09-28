@@ -1,13 +1,25 @@
 {
   "domain": "mealie_discover",
   "name": "Mealie Discover",
-  "codeowners": ["@ivan1mihaylov"],
+  "after_dependencies": [
+    "hassio"
+  ],
+  "codeowners": [
+    "@ivan1mihaylov"
+  ],
   "config_flow": true,
-  "dependencies": ["http", "frontend", "panel_custom", "websocket_api"],
+  "dependencies": [
+    "frontend",
+    "http",
+    "network",
+    "panel_custom",
+    "websocket_api"
+  ],
   "documentation": "https://github.com/ivan1mihaylov/Mealie-Discover",
   "integration_type": "service",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/ivan1mihaylov/Mealie-Discover/issues",
   "requirements": [],
-  "version": "0.1.0"
+  "single_config_entry": true,
+  "version": "0.2.0"
 }
