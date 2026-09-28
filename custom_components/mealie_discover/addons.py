@@ -99,3 +99,22 @@ async def _is_searxng(session: ClientSession, url: str) -> bool:
 async def _is_mealie(session: ClientSession, url: str) -> bool:
     body = await _get_json(session, f"{url}/api/app/about")
     return isinstance(body, dict) and "version" in body
+
+
+async def async_mealie_panel(hass: HomeAssistant) -> dict[str, str] | None:
+    """Slug and ingress URL of a started Mealie add-on with a sidebar panel."""
+    if not is_hassio(hass):
+        return None
+    from homeassistant.components.hassio import get_supervisor_client
+
+    client = get_supervisor_client(hass)
+    try:
+        for addon in await client.addons.list():
+            if "mealie" not in f"{addon.slug} {addon.name}".lower() or addon.state != "started":
+                continue
+            info = await client.addons.addon_info(addon.slug)
+            if info.ingress_url:
+                return {"slug": addon.slug, "ingress_url": info.ingress_url}
+    except Exception:  # noqa: BLE001 - the panel falls back to a browser tab
+        _LOGGER.debug("Could not look up the Mealie add-on", exc_info=True)
+    return None

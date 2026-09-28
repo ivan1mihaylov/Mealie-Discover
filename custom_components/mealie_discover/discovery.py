@@ -244,7 +244,7 @@ class RecipeDiscovery:
             })
         return sorted(result, key=lambda item: item["views"], reverse=True)
 
-    async def import_url(self, url: str) -> str:
+    async def import_url(self, url: str) -> dict[str, str]:
         provider = self.allowed.get(url)
         if provider is None:
             raise DiscoveryError("Първо потърси и избери рецепта от резултатите.")
@@ -263,8 +263,8 @@ class RecipeDiscovery:
         if not isinstance(slug, str) or not slug:
             raise DiscoveryError("Mealie не върна адрес на новата рецепта.")
         self.allowed.pop(url, None)
-        group = await self._group()
-        return f"{self._mealie_url}/g/{quote(group, safe='')}/r/{quote(slug, safe='')}"
+        path = f"/g/{quote(await self._group(), safe='')}/r/{quote(slug, safe='')}"
+        return {"url": self._mealie_url + path, "path": path}
 
     async def _group(self) -> str:
         """Mealie's recipe URLs contain the user's group slug."""
