@@ -35,11 +35,11 @@ search:
     - json
 ```
 
-A Bulgarian search term works; the integration adds “рецепта” and asks SearXNG for Bulgarian results. Public SearXNG instances usually block JSON requests, so use your own. Google's Custom Search JSON API is no longer offered to new customers, which is why it is not used.
+A Bulgarian search term works; the integration adds “рецепта” and asks SearXNG for Bulgarian results. Public SearXNG instances usually block JSON requests, so use your own.
 
 ### YouTube (optional)
 
-Enable YouTube Data API v3 in Google Cloud and enter an API key. This can be a different key from Custom Search. YouTube search consumes API quota. The integration uses `search.list` and `videos.list` to retrieve the actual view counts.
+Enable YouTube Data API v3 in Google Cloud and enter an API key. YouTube search consumes API quota. The integration uses `search.list` and `videos.list` to retrieve the actual view counts.
 
 ## Releases
 
@@ -47,7 +47,7 @@ Enable YouTube Data API v3 in Google Cloud and enter an API key. This can be a d
 
 ## Limitations
 
-- There is no universal view count for recipe websites. Ratings are only shown when Google returns structured metadata.
+- There is no universal view count for recipe websites. Ratings are only shown when the site publishes schema.org Recipe data.
 - Some websites block Mealie scraping; an import error leaves the source untouched.
 - No search provider credentials are bundled with this repository. YouTube search uses 100 units of the default 10,000 daily API quota per search.
 - Tested structurally; live search/import requires the user's API keys and Mealie instance.
