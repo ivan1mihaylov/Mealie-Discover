@@ -1,0 +1,23 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Свързване на Mealie Discover",
+        "description": "Въведете адреса на Mealie, достъпен от Home Assistant, API токен и поне един източник за търсене. За Google са необходими API ключ и идентификатор на Programmable Search Engine.",
+        "data": {
+          "mealie_url": "Адрес на Mealie",
+          "mealie_token": "API токен на Mealie",
+          "google_key": "Google Custom Search API ключ (незадължително)",
+          "google_cx": "Идентификатор на търсачката (незадължително)",
+          "youtube_key": "YouTube Data API ключ (незадължително)"
+        }
+      }
+    },
+    "error": {
+      "invalid_url": "Въведете HTTP или HTTPS адрес без потребител, парола и параметри",
+      "google_pair": "Попълнете и двете полета за Google или оставете и двете празни",
+      "provider_required": "Настройте поне един източник за търсене"
+    },
+    "abort": {"already_configured": "Mealie Discover вече е настроен"}
+  }
+}

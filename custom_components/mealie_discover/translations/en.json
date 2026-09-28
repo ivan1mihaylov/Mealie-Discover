@@ -1,0 +1,23 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect Mealie Discover",
+        "description": "Enter the Mealie URL reachable from Home Assistant, an API token, and at least one search provider. Google search needs both an API key and a Programmable Search Engine ID.",
+        "data": {
+          "mealie_url": "Mealie URL",
+          "mealie_token": "Mealie API token",
+          "google_key": "Google Custom Search API key (optional)",
+          "google_cx": "Programmable Search Engine ID (optional)",
+          "youtube_key": "YouTube Data API key (optional)"
+        }
+      }
+    },
+    "error": {
+      "invalid_url": "Enter an HTTP or HTTPS URL without credentials or query parameters",
+      "google_pair": "Enter both Google search fields or leave both empty",
+      "provider_required": "Configure at least one search provider"
+    },
+    "abort": {"already_configured": "Mealie Discover is already configured"}
+  }
+}
