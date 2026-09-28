@@ -16,6 +16,8 @@ Search is on demand. API keys and the Mealie token stay in Home Assistant's conf
 2. Install Mealie Discover, then restart Home Assistant.
 3. Settings → Devices & services → Add integration → **Mealie Discover**.
 4. Supply the Mealie URL and a Mealie API token, plus at least one search provider below. Home Assistant checks the connection before saving.
+
+   On Home Assistant OS, running SearXNG and Mealie add-ons are detected and their URLs are filled in for you; check them and add the token.
 5. Open **Mealie Discover** from the Home Assistant sidebar.
 
 To change the URLs, token or keys later: Settings → Devices & services → Mealie Discover → three-dot menu → **Reconfigure**.

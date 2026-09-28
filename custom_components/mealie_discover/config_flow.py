@@ -17,6 +17,7 @@ from .const import (
     CONF_YOUTUBE_KEY,
     DOMAIN,
 )
+from .addons import async_detect_urls
 from .discovery import DiscoveryError, RecipeDiscovery
 
 
@@ -53,6 +54,19 @@ class MealieDiscoverConfigFlow(ConfigFlow, domain=DOMAIN):
     """Set up a single Mealie connection and optional search providers."""
 
     VERSION = 1
+
+    _detected: dict[str, str] | None = None
+
+    async def _detect(self) -> dict[str, str]:
+        """Look for SearXNG and Mealie add-ons once per flow."""
+        if self._detected is None:
+            self._detected = await async_detect_urls(self.hass)
+        return self._detected
+
+    def _placeholders(self) -> dict[str, str]:
+        names = {CONF_SEARXNG_URL: "SearXNG", CONF_MEALIE_URL: "Mealie"}
+        found = [f"{names[key]}: {url}" for key, url in (self._detected or {}).items()]
+        return {"detected": ", ".join(found) or "—"}
 
     async def _validate(self, user_input: dict[str, Any]) -> tuple[dict[str, Any], dict[str, str]]:
         """Normalize the form and check Mealie and SearXNG from Home Assistant."""
@@ -95,8 +109,12 @@ class MealieDiscoverConfigFlow(ConfigFlow, domain=DOMAIN):
                 await self.async_set_unique_id(DOMAIN)
                 self._abort_if_unique_id_configured()
                 return self.async_create_entry(title="Mealie Discover", data=data)
+        detected = await self._detect()
         return self.async_show_form(
-            step_id="user", data_schema=_schema(user_input or {}), errors=errors
+            step_id="user",
+            data_schema=_schema(user_input or detected),
+            errors=errors,
+            description_placeholders=self._placeholders(),
         )
 
     async def async_step_reconfigure(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
@@ -107,8 +125,11 @@ class MealieDiscoverConfigFlow(ConfigFlow, domain=DOMAIN):
             data, errors = await self._validate(user_input)
             if not errors:
                 return self.async_update_reload_and_abort(entry, data=data)
+        detected = await self._detect()
+        current = {key: value for key, value in entry.data.items() if value}
         return self.async_show_form(
             step_id="reconfigure",
-            data_schema=_schema(user_input or dict(entry.data)),
+            data_schema=_schema(user_input or {**detected, **current}),
             errors=errors,
+            description_placeholders=self._placeholders(),
         )

@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Connect Mealie Discover",
-        "description": "Enter the Mealie URL reachable from Home Assistant, an API token, and at least one search provider: a SearXNG instance with JSON output enabled and/or a YouTube Data API key.",
+        "description": "Enter the Mealie URL reachable from Home Assistant, an API token, and at least one search provider: a SearXNG instance with JSON output enabled and/or a YouTube Data API key. Found add-ons: {detected}. Create the Mealie API token in Mealie under your profile → API Tokens.",
         "data": {
           "mealie_url": "Mealie URL",
           "mealie_token": "Mealie API token",
@@ -13,7 +13,7 @@
       },
       "reconfigure": {
         "title": "Reconfigure Mealie Discover",
-        "description": "Enter the Mealie URL reachable from Home Assistant, an API token, and at least one search provider: a SearXNG instance with JSON output enabled and/or a YouTube Data API key.",
+        "description": "Enter the Mealie URL reachable from Home Assistant, an API token, and at least one search provider: a SearXNG instance with JSON output enabled and/or a YouTube Data API key. Found add-ons: {detected}. Create the Mealie API token in Mealie under your profile → API Tokens.",
         "data": {
           "mealie_url": "Mealie URL",
           "mealie_token": "Mealie API token",

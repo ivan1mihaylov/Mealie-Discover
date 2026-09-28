@@ -1,13 +1,17 @@
 {
   "domain": "mealie_discover",
   "name": "Mealie Discover",
+  "after_dependencies": [
+    "hassio"
+  ],
   "codeowners": [
     "@ivan1mihaylov"
   ],
   "config_flow": true,
   "dependencies": [
-    "http",
     "frontend",
+    "http",
+    "network",
     "panel_custom",
     "websocket_api"
   ],
