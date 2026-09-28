@@ -3,21 +3,37 @@
     "step": {
       "user": {
         "title": "Свързване на Mealie Discover",
-        "description": "Въведете адреса на Mealie, достъпен от Home Assistant, API токен и поне един източник за търсене. За Google са необходими API ключ и идентификатор на Programmable Search Engine.",
+        "description": "Въведете адреса на Mealie, достъпен от Home Assistant, API токен и поне един източник за търсене: SearXNG с разрешен JSON формат и/или YouTube Data API ключ.",
         "data": {
           "mealie_url": "Адрес на Mealie",
           "mealie_token": "API токен на Mealie",
-          "google_key": "Google Custom Search API ключ (незадължително)",
-          "google_cx": "Идентификатор на търсачката (незадължително)",
+          "searxng_url": "Адрес на SearXNG (незадължително)",
+          "youtube_key": "YouTube Data API ключ (незадължително)"
+        }
+      },
+      "reconfigure": {
+        "title": "Промяна на Mealie Discover",
+        "description": "Въведете адреса на Mealie, достъпен от Home Assistant, API токен и поне един източник за търсене: SearXNG с разрешен JSON формат и/или YouTube Data API ключ.",
+        "data": {
+          "mealie_url": "Адрес на Mealie",
+          "mealie_token": "API токен на Mealie",
+          "searxng_url": "Адрес на SearXNG (незадължително)",
           "youtube_key": "YouTube Data API ключ (незадължително)"
         }
       }
     },
     "error": {
       "invalid_url": "Въведете HTTP или HTTPS адрес без потребител, парола и параметри",
-      "google_pair": "Попълнете и двете полета за Google или оставете и двете празни",
-      "provider_required": "Настройте поне един източник за търсене"
+      "provider_required": "Настройте SearXNG, YouTube или и двете",
+      "cannot_connect": "Mealie не е достъпен от Home Assistant или адресът не е на неговото API",
+      "invalid_auth": "Mealie отхвърли API токена",
+      "searxng_unreachable": "SearXNG не е достъпен от Home Assistant",
+      "searxng_json": "SearXNG отказва JSON формат. Добавете \"json\" в search.formats в settings.yml"
     },
-    "abort": {"already_configured": "Mealie Discover вече е настроен"}
+    "abort": {
+      "already_configured": "Mealie Discover вече е настроен",
+      "single_instance_allowed": "Mealie Discover вече е настроен",
+      "reconfigure_successful": "Настройките са обновени"
+    }
   }
 }
