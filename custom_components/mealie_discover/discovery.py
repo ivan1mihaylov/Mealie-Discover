@@ -7,6 +7,7 @@ from collections import OrderedDict
 from collections.abc import Mapping
 import ipaddress
 import json
+import logging
 import re
 from typing import Any
 from urllib.parse import quote, urlsplit
@@ -14,6 +15,8 @@ from urllib.parse import quote, urlsplit
 from aiohttp import ClientError, ClientResponse, ClientSession
 
 from .const import CONF_MEALIE_TOKEN, CONF_MEALIE_URL, CONF_SEARXNG_URL, CONF_YOUTUBE_KEY
+
+_LOGGER = logging.getLogger(__name__)
 
 # Import is allowed only for URLs a search returned; keep enough for several tabs.
 _ALLOWED_LIMIT = 200
@@ -263,8 +266,64 @@ class RecipeDiscovery:
         if not isinstance(slug, str) or not slug:
             raise DiscoveryError("Mealie не върна адрес на новата рецепта.")
         self.allowed.pop(url, None)
+        linked, total = await self._link_ingredients(slug)
         path = f"/g/{quote(await self._group(), safe='')}/r/{quote(slug, safe='')}"
-        return {"url": self._mealie_url + path, "path": path}
+        return {"url": self._mealie_url + path, "path": path, "linked": linked, "total": total}
+
+    async def _mealie(self, method: str, path: str, *, json: Any = None, timeout: int = 30) -> Any:
+        async with asyncio.timeout(timeout):
+            async with self.session.request(
+                method, f"{self._mealie_url}{path}", json=json, headers=self._mealie_headers
+            ) as response:
+                response.raise_for_status()
+                return await response.json(content_type=None)
+
+    async def _link_ingredients(self, slug: str) -> tuple[int, int]:
+        """Parse the imported text ingredients and link them to existing foods and units.
+
+        Mealie stores URL imports as plain text; its parser matches existing foods
+        and units, with AI when OpenAI is configured. Lines whose food is not in
+        Mealie stay as text so no duplicate foods are created. Failures keep the
+        recipe as imported.
+        """
+        try:
+            recipe = await self._mealie("GET", f"/api/recipes/{quote(slug, safe='')}")
+            ingredients = recipe.get("recipeIngredient") or []
+            texts = [_ingredient_text(item) for item in ingredients]
+            wanted = [text for text in texts if text]
+            if not wanted:
+                return 0, 0
+            parsed = None
+            for parser in ("openai", "brute"):
+                try:
+                    parsed = await self._mealie(
+                        "POST", "/api/parser/ingredients",
+                        json={"parser": parser, "ingredients": wanted}, timeout=120,
+                    )
+                except (TimeoutError, ClientError, ValueError):
+                    continue
+                if isinstance(parsed, list) and len(parsed) == len(wanted):
+                    break
+                parsed = None
+            if parsed is None:
+                return 0, len(wanted)
+            results = iter(parsed)
+            linked = 0
+            updated = []
+            for item, text in zip(ingredients, texts):
+                if not text:
+                    updated.append(item)
+                    continue
+                ingredient = _linked_ingredient(item, text, next(results))
+                linked += ingredient is not item
+                updated.append(ingredient)
+            if linked:
+                recipe["recipeIngredient"] = updated
+                await self._mealie("PUT", f"/api/recipes/{quote(slug, safe='')}", json=recipe)
+            return linked, len(wanted)
+        except (TimeoutError, ClientError, ValueError, TypeError, AttributeError):
+            _LOGGER.warning("Could not link the ingredients of %s", slug, exc_info=True)
+            return 0, 0
 
     async def _group(self) -> str:
         """Mealie's recipe URLs contain the user's group slug."""
@@ -294,6 +353,39 @@ async def _import_error(response: ClientResponse, provider: str) -> str:
     if provider == "youtube":
         message += " За видео е необходим AI импорт (OpenAI) в Mealie."
     return message
+
+
+def _ingredient_text(item: Any) -> str:
+    """The original text of an unparsed ingredient; empty for linked ones and section headers."""
+    if not isinstance(item, dict) or (item.get("food") or {}).get("id"):
+        return ""
+    for key in ("originalText", "note", "display"):
+        if isinstance(item.get(key), str) and item[key].strip():
+            return item[key].strip()
+    return ""
+
+
+def _linked_ingredient(item: dict, text: str, parsed: Any) -> dict:
+    """Use the parser's result only when it found an existing food."""
+    ingredient = parsed.get("ingredient") if isinstance(parsed, dict) else None
+    food = (ingredient or {}).get("food") or {}
+    if not food.get("id"):
+        return item
+    unit = ingredient.get("unit") or {}
+    note = (ingredient.get("note") or "").strip()
+    if unit and not unit.get("id"):
+        # An unknown unit stays readable in the note instead of creating a new unit.
+        note = f"{unit.get('name', '')} {note}".strip()
+        unit = None
+    return {
+        **item,
+        "quantity": ingredient.get("quantity") or 0,
+        "unit": unit or None,
+        "food": food,
+        "note": note,
+        "display": "",
+        "originalText": text,
+    }
 
 
 def _recipe_query(query: str) -> str:
