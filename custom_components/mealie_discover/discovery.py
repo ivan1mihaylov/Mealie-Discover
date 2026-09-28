@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import base64
 from collections import OrderedDict
 from collections.abc import Mapping
 import ipaddress
@@ -302,7 +303,7 @@ class RecipeDiscovery:
         self.allowed.pop(url, None)
         linked, total = await self._link_ingredients(slug)
         path = f"/g/{quote(await self._group(), safe='')}/r/{quote(slug, safe='')}"
-        return {"url": self._mealie_url + path, "path": path, "linked": linked, "total": total}
+        return {"url": self._mealie_url + path, "path": path, "slug": slug, "linked": linked, "total": total}
 
     async def import_social(self, url: str) -> dict[str, Any]:
         """Let the Social to Mealie add-on download, transcribe and import a video or post."""
@@ -331,7 +332,63 @@ class RecipeDiscovery:
         path = urlsplit(link).path
         slug = unquote(path.rstrip("/").rsplit("/", 1)[-1])
         linked, total = await self._link_ingredients(slug)
-        return {"url": self._mealie_url + path, "path": path, "linked": linked, "total": total}
+        return {"url": self._mealie_url + path, "path": path, "slug": slug, "linked": linked, "total": total}
+
+    async def recipe(self, slug: str) -> dict[str, Any]:
+        """A readable copy of a Mealie recipe for the panel's recipe view."""
+        try:
+            recipe = await self._mealie("GET", f"/api/recipes/{quote(slug, safe='')}")
+        except (TimeoutError, ClientError, ValueError) as exc:
+            raise DiscoveryError("Mealie не върна рецептата. Провери връзката с Mealie.") from exc
+        ingredients = []
+        for item in recipe.get("recipeIngredient") or []:
+            if not isinstance(item, dict):
+                continue
+            if item.get("title"):
+                ingredients.append({"title": item["title"]})
+            text = (item.get("display") or item.get("note") or item.get("originalText") or "").strip()
+            if text:
+                ingredients.append({"text": text})
+        steps = []
+        for step in recipe.get("recipeInstructions") or []:
+            if not isinstance(step, dict):
+                continue
+            if step.get("title"):
+                steps.append({"title": step["title"]})
+            if (step.get("text") or "").strip():
+                steps.append({"text": step["text"].strip()})
+        path = f"/g/{quote(await self._group(), safe='')}/r/{quote(slug, safe='')}"
+        return {
+            "name": recipe.get("name") or slug,
+            "description": recipe.get("description") or "",
+            "servings": recipe.get("recipeYield") or (recipe.get("recipeServings") or ""),
+            "total_time": _duration_text(recipe.get("totalTime")),
+            "prep_time": _duration_text(recipe.get("prepTime")),
+            "cook_time": _duration_text(recipe.get("performTime") or recipe.get("cookTime")),
+            "ingredients": ingredients,
+            "steps": steps,
+            "image": await self._recipe_image(recipe.get("id")),
+            "source": recipe.get("orgURL") or "",
+            "url": self._mealie_url + path,
+        }
+
+    async def _recipe_image(self, recipe_id: Any) -> str:
+        """The recipe photo as a data URL, so browsers never need to reach Mealie directly."""
+        if not recipe_id:
+            return ""
+        try:
+            async with asyncio.timeout(15):
+                async with self.session.get(
+                    f"{self._mealie_url}/api/media/recipes/{quote(str(recipe_id), safe='')}/images/min-original.webp",
+                    headers=self._mealie_headers,
+                ) as response:
+                    if response.status != 200 or not response.content_type.startswith("image/"):
+                        return ""
+                    data = await response.content.read(_PAGE_LIMIT)
+                    content_type = response.content_type
+        except (TimeoutError, ClientError):
+            return ""
+        return f"data:{content_type};base64,{base64.b64encode(data).decode()}"
 
     async def _mealie(self, method: str, path: str, *, json: Any = None, timeout: int = 30) -> Any:
         async with asyncio.timeout(timeout):
@@ -426,6 +483,14 @@ def _unresponsive(response: Any) -> str:
         if isinstance(engine, (list, tuple)) and engine:
             names.append(f"{engine[0]} ({engine[1]})" if len(engine) > 1 and engine[1] else str(engine[0]))
     return ", ".join(names)
+
+
+def _duration_text(value: Any) -> str:
+    """Mealie keeps times as free text; turn ISO 8601 durations into minutes."""
+    if not isinstance(value, str) or not value.strip():
+        return ""
+    minutes = _minutes(value)
+    return f"{minutes} мин" if minutes else value.strip()
 
 
 def _ingredient_text(item: Any) -> str:

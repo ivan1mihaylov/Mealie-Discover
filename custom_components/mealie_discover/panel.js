@@ -9,6 +9,7 @@ const ICONS = {
   open: "M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7m5 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7Z",
   close: "M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z",
   link: "M10.59 13.41c.41.39.41 1.03 0 1.42-.39.39-1.03.39-1.42 0a5.003 5.003 0 0 1 0-7.07l3.54-3.54a5.003 5.003 0 0 1 7.07 0 5.003 5.003 0 0 1 0 7.07l-1.49 1.49c.01-.82-.12-1.64-.4-2.42l.47-.48a2.982 2.982 0 0 0 0-4.24 2.982 2.982 0 0 0-4.24 0l-3.53 3.53a2.982 2.982 0 0 0 0 4.24m2.82-4.24c.39-.39 1.03-.39 1.42 0a5.003 5.003 0 0 1 0 7.07l-3.54 3.54a5.003 5.003 0 0 1-7.07 0 5.003 5.003 0 0 1 0-7.07l1.49-1.49c-.01.82.12 1.64.4 2.43l-.47.47a2.982 2.982 0 0 0 0 4.24 2.982 2.982 0 0 0 4.24 0l3.53-3.53a2.982 2.982 0 0 0 0-4.24.973.973 0 0 1 0-1.42Z",
+  people: "M12 5.5A3.5 3.5 0 0 1 15.5 9a3.5 3.5 0 0 1-3.5 3.5A3.5 3.5 0 0 1 8.5 9 3.5 3.5 0 0 1 12 5.5M5 8c.56 0 1.08.15 1.53.42-.15 1.43.27 2.85 1.13 3.96C7.16 13.34 6.16 14 5 14a3 3 0 0 1-3-3 3 3 0 0 1 3-3m14 0a3 3 0 0 1 3 3 3 3 0 0 1-3 3c-1.16 0-2.16-.66-2.66-1.62a5.54 5.54 0 0 0 1.13-3.96c.45-.27.97-.42 1.53-.42M5.5 18.25c0-2.07 2.91-3.75 6.5-3.75s6.5 1.68 6.5 3.75V20h-13v-1.75M0 20v-1.5c0-1.39 1.89-2.56 4.45-2.9-.59.68-.95 1.62-.95 2.65V20H0m24 0h-3.5v-1.75c0-1.03-.36-1.97-.95-2.65 2.56.34 4.45 1.51 4.45 2.9V20Z",
   back: "M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z",
   web: "M16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2 0-.68.06-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.65 15.65 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2Z",
   video: "M10 15l5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 5c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73Z",
@@ -54,10 +55,6 @@ class MealieDiscoverPanel extends HTMLElement {
   set narrow(value) {
     this._narrow = value;
     if (this._menu) this._menu.narrow = value;
-  }
-
-  disconnectedCallback() {
-    clearInterval(this._keepAlive);
   }
 
   async _mount() {
@@ -160,12 +157,33 @@ class MealieDiscoverPanel extends HTMLElement {
           padding:12px 18px; border-radius:14px; background:var(--md-text); color:var(--primary-background-color, #fff);
           box-shadow:0 10px 30px rgba(0,0,0,.25); font-size:14px; line-height:1.4; opacity:0; pointer-events:none; transition:opacity .25s, transform .25s; z-index:10 }
         .toast.show { opacity:1; transform:translate(-50%, 0) }
-        #viewer { display:flex; flex-direction:column; height:calc(100vh - var(--header-height, 56px)) }
-        .viewer-bar { display:flex; gap:8px; padding:8px 12px; background:var(--md-card); border-bottom:1px solid var(--md-line) }
+        .viewer-bar { position:sticky; top:0; z-index:2; display:flex; gap:8px; padding:8px 12px; background:var(--md-card); border-bottom:1px solid var(--md-line) }
         .viewer-bar .grow { flex:1 }
         .viewer-bar button { display:flex; align-items:center; gap:6px; padding:8px 14px; border-radius:18px; background:var(--md-surface) }
         .viewer-bar .accent { background:var(--md-accent); color:var(--text-primary-color, #fff) }
-        #frame { flex:1; width:100%; border:0; background:var(--primary-background-color) }
+        .sheet { max-width:760px; margin:0 auto; padding:0 0 96px }
+        .sheet .photo { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; background:var(--md-surface) }
+        .sheet .content { padding:18px 16px 0 }
+        .sheet h1 { margin:0 0 10px; font-size:clamp(22px, 5vw, 30px); line-height:1.2 }
+        .sheet .facts { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px }
+        .sheet .fact { display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border-radius:14px; background:var(--md-surface); font-size:14px }
+        .sheet .desc { color:var(--md-muted); line-height:1.55; margin:0 0 8px; white-space:pre-line }
+        .sheet h2 { margin:26px 0 12px; font-size:19px }
+        .sheet h3 { margin:16px 0 6px; font-size:15px; color:var(--md-accent) }
+        .ingredients { list-style:none; margin:0; padding:0; background:var(--md-card); border:1px solid var(--md-line); border-radius:16px; overflow:hidden }
+        .ingredients li { display:flex; gap:12px; align-items:flex-start; padding:12px 14px; border-top:1px solid var(--md-line); cursor:pointer; line-height:1.4 }
+        .ingredients li:first-child { border-top:0 }
+        .ingredients li::before { content:""; flex:none; width:18px; height:18px; margin-top:1px; border-radius:50%; border:2px solid var(--md-accent) }
+        .ingredients li.got { color:var(--md-muted); text-decoration:line-through }
+        .ingredients li.got::before { background:var(--md-accent) }
+        .sheet .content { counter-reset:step }
+        .steps { list-style:none; margin:0; padding:0 }
+        .steps li { position:relative; padding:0 0 18px 46px; line-height:1.6; counter-increment:step; white-space:pre-line }
+        .steps li::before { content:counter(step); position:absolute; left:0; top:-2px; width:32px; height:32px; border-radius:50%;
+          display:grid; place-items:center; font-weight:600; font-size:14px; background:color-mix(in srgb, var(--md-accent) 18%, transparent); color:var(--md-accent) }
+        .sheet .muted { color:var(--md-muted) }
+        .sheet .skeleton .line { margin:10px 0 }
+        @media (min-width:800px) { .sheet { padding-top:20px } .sheet .photo { border-radius:20px } }
         @media (max-width:600px) {
           main { padding:12px 12px 96px }
           .grid { grid-template-columns:1fr; gap:14px }
@@ -198,9 +216,9 @@ class MealieDiscoverPanel extends HTMLElement {
       <section id="viewer" hidden>
         <div class="viewer-bar">
           <button id="back" type="button">${icon("back")}Назад</button><span class="grow"></span>
-          <button id="open-mealie" class="accent" type="button">${icon("open")}Отвори Mealie</button>
+          <button id="open-mealie" class="accent" type="button">${icon("open")}Отвори в Mealie</button>
         </div>
-        <iframe id="frame" title="Mealie"></iframe>
+        <div class="sheet" id="sheet"></div>
       </section>
       <div class="toast" id="toast" role="alert"></div>`;
     this.root = root;
@@ -233,8 +251,14 @@ class MealieDiscoverPanel extends HTMLElement {
     this._toggleClear = toggleClear;
     root.querySelector("#back").addEventListener("click", () => this._closeRecipe());
     root.querySelector("#open-mealie").addEventListener("click", () => {
-      this._closeRecipe();
-      this._navigate(`/${this._mealiePanel.slug}`);
+      const recipe = this._viewing;
+      if (this._mealiePanel) {
+        // Home Assistant's add-on panel always opens Mealie's start page, where new recipes are on top.
+        this._closeRecipe();
+        this._navigate(`/${this._mealiePanel.slug}`);
+      } else if (recipe) {
+        window.open(recipe.url, "_blank", "noopener");
+      }
     });
 
     try {
@@ -293,8 +317,7 @@ class MealieDiscoverPanel extends HTMLElement {
     const button = this.root.querySelector("#submit");
     if (button.disabled) return;
     if (this._linkResult) {
-      if (this._mealiePanel) this._openRecipe(this._linkResult);
-      else window.open(this._linkResult.url, "_blank", "noopener");
+      this._openRecipe(this._linkResult);
       return;
     }
     const url = this.root.querySelector("#query").value.trim();
@@ -328,8 +351,7 @@ class MealieDiscoverPanel extends HTMLElement {
       event.preventDefault();
       if (button.disabled) return;
       if (button._result) {
-        if (this._mealiePanel) this._openRecipe(button._result);
-        else window.open(button._result.url, "_blank", "noopener");
+        this._openRecipe(button._result);
         return;
       }
       const form = button.closest("form");
@@ -376,37 +398,99 @@ class MealieDiscoverPanel extends HTMLElement {
     window.dispatchEvent(new CustomEvent("location-changed", { detail: { replace: false } }));
   }
 
-  // Same session the add-on panels use, so Mealie opens inside Home Assistant.
-  async _ingressSession() {
-    const { session } = await this._hass.callWS({ type: "supervisor/api", endpoint: "/ingress/session", method: "post" });
-    document.cookie = `ingress_session=${session};path=/api/hassio_ingress/;SameSite=Strict${location.protocol === "https:" ? ";Secure" : ""}`;
-    this._session = session;
-  }
-
+  // Show the imported recipe inside the panel, read from Mealie's API.
   async _openRecipe(result) {
-    try {
-      await this._ingressSession();
-    } catch (error) {
-      // Only administrators may open add-on sessions; fall back to a browser tab.
-      window.open(result.url, "_blank", "noopener");
-      return;
-    }
-    clearInterval(this._keepAlive);
-    this._keepAlive = setInterval(async () => {
-      try {
-        await this._hass.callWS({ type: "supervisor/api", endpoint: "/ingress/validate_session", method: "post", data: { session: this._session } });
-      } catch (error) {
-        try { await this._ingressSession(); } catch (retryError) { /* shown by Mealie on next request */ }
-      }
-    }, 60000);
-    this.root.querySelector("#frame").src = this._mealiePanel.ingress_url.replace(/\/$/, "") + result.path;
+    this._viewing = result;
+    const sheet = this.root.querySelector("#sheet");
+    sheet.replaceChildren(element("div", "skeleton", `<div class="media photo"></div><div class="content">
+      <div class="line" style="width:70%;height:24px"></div><div class="line" style="width:40%"></div>
+      <div class="line" style="width:90%"></div><div class="line" style="width:85%"></div><div class="line" style="width:60%"></div></div>`));
     this.root.querySelector("main").hidden = true;
     this.root.querySelector("#viewer").hidden = false;
+    this.scrollIntoView?.({ block: "start" });
+    try {
+      const recipe = await this._hass.callWS({ type: "mealie_discover/recipe", slug: result.slug });
+      if (this._viewing !== result) return;
+      this._viewing = { ...result, url: recipe.url };
+      sheet.replaceChildren(...this._recipeView(recipe));
+    } catch (error) {
+      if (this._viewing !== result) return;
+      const note = element("div", "content");
+      const text = element("p", "muted");
+      text.textContent = this._error(error);
+      note.append(text);
+      sheet.replaceChildren(note);
+    }
+  }
+
+  _recipeView(recipe) {
+    const nodes = [];
+    if (recipe.image) {
+      const photo = element("img", "photo");
+      photo.src = recipe.image;
+      photo.alt = "";
+      nodes.push(photo);
+    }
+    const content = element("div", "content");
+    const title = element("h1");
+    title.textContent = recipe.name;
+    content.append(title);
+    const facts = element("div", "facts");
+    const fact = (name, label, value) => {
+      if (!value) return;
+      const node = element("span", "fact", icon(name, 16));
+      node.append(`${label}${value}`);
+      facts.append(node);
+    };
+    fact("clock", "", recipe.total_time);
+    if (!recipe.total_time) {
+      fact("clock", "Подготовка: ", recipe.prep_time);
+      fact("clock", "Готвене: ", recipe.cook_time);
+    }
+    fact("people", /^[\d.,\s–-]+$/.test(String(recipe.servings)) ? "Порции: " : "", recipe.servings);
+    if (facts.children.length) content.append(facts);
+    if (recipe.description) {
+      const desc = element("p", "desc");
+      desc.textContent = recipe.description;
+      content.append(desc);
+    }
+
+    const heading = (text) => { const node = element("h2"); node.textContent = text; content.append(node); };
+    const subheading = (text) => { const node = element("h3"); node.textContent = text; content.append(node); };
+    if (recipe.ingredients.length) {
+      heading("Съставки");
+      let list = null;
+      for (const item of recipe.ingredients) {
+        if (item.title) { subheading(item.title); list = null; continue; }
+        if (!list) { list = element("ul", "ingredients"); content.append(list); }
+        const row = element("li");
+        row.textContent = item.text;
+        row.addEventListener("click", () => row.classList.toggle("got"));
+        list.append(row);
+      }
+    }
+    if (recipe.steps.length) {
+      heading("Приготвяне");
+      let list = null;
+      for (const step of recipe.steps) {
+        if (step.title) { subheading(step.title); list = null; continue; }
+        if (!list) { list = element("ol", "steps"); content.append(list); }
+        const row = element("li");
+        row.textContent = step.text;
+        list.append(row);
+      }
+    }
+    if (!recipe.ingredients.length && !recipe.steps.length) {
+      const empty = element("p", "muted");
+      empty.textContent = "Рецептата няма съставки и стъпки. Отвори я в Mealie, за да я допълниш.";
+      content.append(empty);
+    }
+    nodes.push(content);
+    return nodes;
   }
 
   _closeRecipe() {
-    clearInterval(this._keepAlive);
-    this.root.querySelector("#frame").src = "about:blank";
+    this._viewing = undefined;
     this.root.querySelector("#viewer").hidden = true;
     this.root.querySelector("main").hidden = false;
   }
