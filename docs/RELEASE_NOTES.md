@@ -1,2 +1,4 @@
-- The sidebar icon is visible again: `mdi:food-search` does not exist in Material Design Icons, so it now uses `mdi:silverware-variant` (crossed fork and knife, different from the Mealie add-on's icon).
-- New integration icon: a blue tile with a white fork and knife and a small magnifier.
+- **Popularity index (🔥 0–100)** for both videos and recipe pages, and results are sorted by it. 70% is reach (views, or visits estimated from the number of ratings, on a log scale) and 30% is quality (like rate, or the average rating adjusted for the number of votes). Tap the badge to see what it is based on. Results without data get no index.
+- **Video length** is shown on YouTube results.
+- Ratings on scales other than five stars are converted to five stars.
+- Switching between Sites and YouTube keeps the search text; only the link field keeps its own.
