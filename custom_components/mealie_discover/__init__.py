@@ -44,7 +44,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: MealieDiscoverConfigEntr
         frontend_url_path=_PANEL_PATH,
         webcomponent_name="mealie-discover-panel",
         sidebar_title="Mealie Discover",
-        sidebar_icon="mdi:food-search",
+        sidebar_icon="mdi:silverware-variant",
         # The version busts the browser cache after an update from HACS.
         module_url=f"{_SCRIPT_URL}?v={integration.version}",
         config_panel_domain=DOMAIN,
