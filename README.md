@@ -10,6 +10,14 @@ Find recipes from the Home Assistant sidebar and import a selected URL into Meal
 
 Search is on demand. API keys and the Mealie token stay in Home Assistant's config entry and are not sent to the browser.
 
+## Popularity index
+
+Results carry a 🔥 popularity index from 0 to 100 that is comparable between videos and recipe pages, and they are sorted by it. Tap the badge to see what it is based on.
+
+- **Reach, 70%:** YouTube views, or for recipe pages the number of ratings × 200 as an estimate of visits. It is on a log scale that reaches 100 at 10 million: about 43 for 1,000 and 71 for 100,000.
+- **Quality, 30%:** for videos the like rate, where 4% counts as excellent; for recipe pages the average rating, pulled towards 3.5★ when there are few votes, so 5★ from 3 people does not beat 4.8★ from 1,200. Ratings on other scales are converted to five stars.
+- Results without views or ratings get no index rather than a made-up one and keep the search engine's order.
+
 ## Install from HACS
 
 1. HACS → three-dot menu → **Custom repositories** → add `https://github.com/ivan1mihaylov/Mealie-Discover` as **Integration**.

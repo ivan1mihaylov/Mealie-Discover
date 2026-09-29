@@ -8,6 +8,7 @@ from collections.abc import Mapping
 import ipaddress
 import json
 import logging
+import math
 import re
 from typing import Any
 from urllib.parse import quote, unquote, urlsplit
@@ -192,9 +193,11 @@ class RecipeDiscovery:
                 f"{failed}. Изчакай малко или включи още търсачки в SearXNG (DuckDuckGo, Brave, Bing)."
             )
         await asyncio.gather(*(self._enrich(item) for item in items))
-        # Pages with a schema.org Recipe come first (Mealie can import those),
-        # then the most rated; ties keep the search engine's order.
-        items.sort(key=lambda item: (not item["is_recipe"], -(item["rating_count"] or 0)))
+        for item in items:
+            item["score"] = popularity(item)
+        # Pages with a schema.org Recipe come first (Mealie can import those), then
+        # the most popular; pages without ratings keep the search engine's order.
+        items.sort(key=lambda item: (not item["is_recipe"], -(item["score"] or 0)))
         return items
 
     async def _enrich(self, item: dict) -> None:
@@ -222,7 +225,10 @@ class RecipeDiscovery:
         if isinstance(rating, list):
             rating = rating[0] if rating else None
         if isinstance(rating, dict):
-            item["rating"] = _number(rating.get("ratingValue"))
+            value = _number(rating.get("ratingValue"))
+            best = _number(rating.get("bestRating")) or 5
+            # Ratings are compared on a five-star scale, whatever scale the site uses.
+            item["rating"] = round(min(value * 5 / best, 5), 1) if value and best > 1 else None
             item["rating_count"] = _count(rating.get("ratingCount")) or _count(rating.get("reviewCount"))
         total = _minutes(recipe.get("totalTime"))
         if total is None:
@@ -255,9 +261,13 @@ class RecipeDiscovery:
             return []
         stats = await self._json(
             "https://www.googleapis.com/youtube/v3/videos",
-            params={"part": "statistics", "id": ",".join(ids), "key": key},
+            params={"part": "statistics,contentDetails", "id": ",".join(ids), "key": key},
         )
         counts = {row["id"]: row.get("statistics", {}) for row in stats.get("items", [])}
+        durations = {
+            row["id"]: _seconds((row.get("contentDetails") or {}).get("duration"))
+            for row in stats.get("items", [])
+        }
         result = []
         for row in rows:
             video_id = row.get("id", {}).get("videoId")
@@ -274,8 +284,11 @@ class RecipeDiscovery:
                 "image": (thumbnails.get("medium") or thumbnails.get("default") or {}).get("url", ""),
                 "views": _count(counts.get(video_id, {}).get("viewCount")) or 0,
                 "likes": _count(counts.get(video_id, {}).get("likeCount")) or 0,
+                "duration": durations.get(video_id),
             })
-        return sorted(result, key=lambda item: item["views"], reverse=True)
+        for item in result:
+            item["score"] = popularity(item)
+        return sorted(result, key=lambda item: (item["score"] or 0, item["views"]), reverse=True)
 
     async def import_url(self, url: str) -> dict[str, str]:
         provider = self.allowed.get(url)
@@ -524,6 +537,44 @@ def _number(value: Any) -> float | None:
 def _count(value: Any) -> int | None:
     digits = re.sub(r"\D", "", str(value)) if value is not None else ""
     return int(digits) if digits else None
+
+
+# Popularity index, 0–100, comparable between videos and recipe pages:
+# 70% reach on a log scale (views, or visits estimated from the number of ratings)
+# and 30% quality (like rate, or the rating shrunk towards average for few votes).
+_FULL_REACH = 10_000_000
+_VISITS_PER_RATING = 200
+_PRIOR_RATING, _PRIOR_VOTES = 3.5, 10
+_GOOD_LIKE_RATE, _PRIOR_VIEWS = 0.04, 500
+
+
+def popularity(item: dict) -> int | None:
+    """None when there is nothing to measure, rather than a made-up number."""
+    if item.get("provider") == "youtube":
+        views = item.get("views") or 0
+        if not views:
+            return None
+        reach = views
+        rate = ((item.get("likes") or 0) + _GOOD_LIKE_RATE / 2 * _PRIOR_VIEWS) / (views + _PRIOR_VIEWS)
+        quality = min(rate / _GOOD_LIKE_RATE, 1.0)
+    else:
+        votes, rating = item.get("rating_count") or 0, item.get("rating")
+        if not votes or not rating:
+            return None
+        reach = votes * _VISITS_PER_RATING
+        average = (_PRIOR_RATING * _PRIOR_VOTES + min(rating, 5) * votes) / (_PRIOR_VOTES + votes)
+        quality = max(0.0, (average - 1) / 4)
+    reach_score = min(math.log10(reach + 1) / math.log10(_FULL_REACH), 1.0)
+    return round(100 * (0.7 * reach_score + 0.3 * quality))
+
+
+def _seconds(value: Any) -> int | None:
+    """Length of an ISO 8601 duration such as PT1H2M3S, in seconds."""
+    match = re.fullmatch(r"P(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?)?", value or "") if isinstance(value, str) else None
+    if not match or not any(match.groups()):
+        return None
+    days, hours, minutes, seconds = (int(group or 0) for group in match.groups())
+    return ((days * 24 + hours) * 60 + minutes) * 60 + seconds or None
 
 
 def _minutes(value: Any) -> int | None:

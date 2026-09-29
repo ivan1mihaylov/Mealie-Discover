@@ -9,6 +9,7 @@ const ICONS = {
   open: "M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7m5 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7Z",
   close: "M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z",
   link: "M10.59 13.41c.41.39.41 1.03 0 1.42-.39.39-1.03.39-1.42 0a5.003 5.003 0 0 1 0-7.07l3.54-3.54a5.003 5.003 0 0 1 7.07 0 5.003 5.003 0 0 1 0 7.07l-1.49 1.49c.01-.82-.12-1.64-.4-2.42l.47-.48a2.982 2.982 0 0 0 0-4.24 2.982 2.982 0 0 0-4.24 0l-3.53 3.53a2.982 2.982 0 0 0 0 4.24m2.82-4.24c.39-.39 1.03-.39 1.42 0a5.003 5.003 0 0 1 0 7.07l-3.54 3.54a5.003 5.003 0 0 1-7.07 0 5.003 5.003 0 0 1 0-7.07l1.49-1.49c-.01.82.12 1.64.4 2.43l-.47.47a2.982 2.982 0 0 0 0 4.24 2.982 2.982 0 0 0 4.24 0l3.53-3.53a2.982 2.982 0 0 0 0-4.24.973.973 0 0 1 0-1.42Z",
+  fire: "M17.66 11.2c-.23-.3-.51-.56-.77-.82-.67-.6-1.43-1.03-2.07-1.66C13.33 7.26 13 4.85 13.95 3c-.95.23-1.78.75-2.49 1.32-2.59 2.08-3.61 5.75-2.39 8.9.04.1.08.2.08.33 0 .22-.15.42-.35.5-.23.1-.47.04-.66-.12a.58.58 0 0 1-.14-.17c-1.13-1.43-1.31-3.48-.55-5.12C5.78 10 4.87 12.3 5 14.47c.06.5.12 1 .29 1.5.14.6.41 1.2.71 1.73 1.08 1.73 2.95 2.97 4.96 3.22 2.14.27 4.43-.12 6.07-1.6 1.83-1.66 2.47-4.32 1.53-6.6l-.13-.26c-.21-.46-.77-1.26-.77-1.26m-3.16 6.3c-.28.24-.74.5-1.1.6-1.12.4-2.24-.16-2.9-.82 1.19-.28 1.9-1.16 2.11-2.05.17-.8-.15-1.46-.28-2.23-.12-.74-.1-1.37.17-2.06.19.38.39.76.63 1.06.77 1 1.98 1.44 2.24 2.8.04.14.06.28.06.43.03.82-.33 1.72-.93 2.27Z",
   back: "M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z",
   web: "M16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2 0-.68.06-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.65 15.65 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2Z",
   video: "M10 15l5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 5c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73Z",
@@ -128,6 +129,10 @@ class MealieDiscoverPanel extends HTMLElement {
         .badge { display:inline-flex; align-items:center; gap:4px; padding:4px 9px; border-radius:12px; font-size:13px; font-weight:500;
           color:#fff; background:rgba(0,0,0,.58); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px) }
         .badge.star svg { color:#ffc107 }
+        .badge.score { cursor:pointer; font-weight:700 }
+        .badge.score.high { background:rgba(46,125,50,.9) }
+        .badge.score.mid { background:rgba(230,126,0,.9) }
+        .badge.duration { margin-left:auto; font-variant-numeric:tabular-nums }
         .body { display:flex; flex-direction:column; gap:8px; padding:14px 16px 16px; flex:1 }
         .source { display:flex; align-items:center; gap:6px; color:var(--md-muted); font-size:13px; overflow:hidden; white-space:nowrap }
         .source img { width:16px; height:16px; border-radius:4px }
@@ -191,7 +196,7 @@ class MealieDiscoverPanel extends HTMLElement {
         <div class="empty" id="empty">
           <div class="big">🍲</div>
           <h3>Потърси любимо ястие</h3>
-          <div>При сайтовете най-отгоре са рецептите с най-много оценки, а при YouTube – най-гледаните.</div>
+          <div>Резултатите са подредени по индекс на популярност 🔥 (0–100) от гледания, харесвания, оценки и брой оценки – еднакъв за видеа и сайтове.</div>
           <div class="group" id="suggestions"></div>
         </div>
       </main>
@@ -257,10 +262,12 @@ class MealieDiscoverPanel extends HTMLElement {
   _setMode() {
     const link = this._provider === "link";
     const query = this.root.querySelector("#query");
+    // Sites and YouTube share the search text; the link field keeps its own.
+    const mode = link ? "link" : "search";
     this._texts = this._texts || {};
     if (this._mode) this._texts[this._mode] = query.value;
-    this._mode = this._provider;
-    query.value = this._texts[this._mode] || "";
+    this._mode = mode;
+    query.value = this._texts[mode] || "";
     query.type = link ? "url" : "search";
     query.inputMode = link ? "url" : "search";
     query.enterKeyHint = link ? "go" : "search";
@@ -446,6 +453,20 @@ class MealieDiscoverPanel extends HTMLElement {
     } finally { button.disabled = false; }
   }
 
+  _duration(seconds) {
+    const h = Math.floor(seconds / 3600), m = Math.floor(seconds / 60) % 60, s = seconds % 60;
+    const pad = (n) => String(n).padStart(2, "0");
+    return h ? `${h}:${pad(m)}:${pad(s)}` : `${m}:${pad(s)}`;
+  }
+
+  _scoreText(recipe) {
+    const number = new Intl.NumberFormat("bg-BG");
+    const basis = recipe.provider === "youtube"
+      ? `${number.format(recipe.views)} гледания, ${number.format(recipe.likes || 0)} харесвания (${((recipe.likes || 0) / recipe.views * 100).toFixed(1).replace(".", ",")}%)`
+      : `${String(recipe.rating).replace(".", ",")}★ от ${number.format(recipe.rating_count)} оценки (≈ ${number.format(recipe.rating_count * 200)} посещения)`;
+    return `Популярност ${recipe.score}/100 – ${basis}. 70% е достигът (гледания или посещения), 30% – качеството (харесвания или средна оценка).`;
+  }
+
   _skeleton() {
     const card = element("article", "skeleton", `<div class="media"></div><div class="body">
       <div class="line" style="width:40%"></div><div class="line" style="width:90%"></div><div class="line" style="width:70%"></div></div>`);
@@ -474,11 +495,18 @@ class MealieDiscoverPanel extends HTMLElement {
       const node = element("span", `badge ${extra}`, icon(name, 14));
       node.append(text);
       badges.append(node);
+      return node;
     };
+    if (recipe.score != null) {
+      const score = badge("fire", String(recipe.score), `score ${recipe.score >= 75 ? "high" : recipe.score >= 50 ? "mid" : ""}`);
+      score.title = this._scoreText(recipe);
+      score.addEventListener("click", (event) => { event.stopPropagation(); this._toast(this._scoreText(recipe), 8000); });
+    }
     if (recipe.rating) badge("star", `${decimal.format(recipe.rating)}${recipe.rating_count ? ` · ${compact.format(recipe.rating_count)}` : ""}`, "star");
     if (recipe.total_minutes) badge("clock", `${recipe.total_minutes} мин`);
     if (recipe.views) badge("eye", compact.format(recipe.views));
     if (recipe.likes) badge("thumb", compact.format(recipe.likes));
+    if (recipe.duration) badge("clock", this._duration(recipe.duration), "duration");
     media.append(badges);
     card.append(media);
 
