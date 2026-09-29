@@ -1,1 +1,2 @@
-- Fixed **Open in Mealie** after a Social to Mealie import reloading empty pages. The recipe path is now built like for website imports instead of being taken from the add-on, whose URL depends on its own `MEALIE_URL` setting (a trailing slash there produced `//g/...`).
+- The sidebar icon is visible again: `mdi:food-search` does not exist in Material Design Icons, so it now uses `mdi:silverware-variant` (crossed fork and knife, different from the Mealie add-on's icon).
+- New integration icon: a blue tile with a white fork and knife and a small magnifier.
