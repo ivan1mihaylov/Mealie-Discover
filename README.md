@@ -2,6 +2,18 @@
 
 Find recipes from the Home Assistant sidebar and import a selected URL into Mealie. This is a HACS custom integration; it does not modify Mealie's UI or database.
 
+## The parts
+
+Each part is installed separately; **Needs** says what it cannot work without. Mealie is the recipe manager, not one of these parts.
+
+| | What it is | Needs |
+| --- | --- | --- |
+| **[HomeBasket](https://github.com/ivan1mihaylov/HomeBasket)** | Scanning, and the products it learns: names, barcodes, pictures, everything the databases know. | Nothing else. Puts scans on a HomeBasket Lists list when that is installed, otherwise on a to-do list. |
+| **[HomeBasket Card](https://github.com/ivan1mihaylov/HomeBasket-Card)** | Scanning with a phone, for when there is no scanner on a shelf — and the place to look after the products themselves. | **HomeBasket** (required). |
+| **[HomeBasket Lists](https://github.com/ivan1mihaylov/HomeBasket-Lists)** | Shopping lists and tasks, using what HomeBasket knows. | Nothing else. HomeBasket is optional: with it, items get products and pictures, and a list can scan. |
+| **Mealie Discover** | This: finds recipes on the web and adds them to Mealie. | **Mealie** (required), and at least one of SearXNG, a YouTube key or Social to Mealie. |
+| **[Mealie Planner](https://github.com/ivan1mihaylov/Mealie-Planner)** | Plans the week in Mealie from your rules and the Lidl, Kaufland and Billa offers, and lists the week's products by shop. | **Mealie** (required). HomeBasket Lists is optional, for putting the products on a list; AI is optional. |
+
 ## What it shows
 
 - **Recipe websites:** results from your [SearXNG](https://docs.searxng.org/) instance. Home Assistant opens each result and reads its schema.org `Recipe` data, so the rating, number of ratings and cooking time are shown when the site publishes them. Pages with a recipe come first, most rated on top; pages without one are marked because Mealie will likely fail to import them. Search position is **not** a view count.
